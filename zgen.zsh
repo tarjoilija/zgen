@@ -75,7 +75,7 @@ zgen-load() {
     fi
 }
 
-zgen-load-oh-my-zsh() {
+zgen-oh-my-zsh() {
     local repo="robbyrussell/oh-my-zsh"
     local file="oh-my-zsh.sh"
 
@@ -85,7 +85,7 @@ zgen-load-oh-my-zsh() {
 zgen() {
     local cmd="${1}"
     if [[ -z "${cmd}" ]]; then
-        echo "usage: zgen [load|load-oh-my-zsh|save|update]"
+        echo "usage: zgen [load|oh-my-zsh|save|update]"
         return 1
     fi
 
@@ -101,7 +101,7 @@ zgen() {
 _zgen() {
     compadd \
         load \
-        load-oh-my-zsh \
+        oh-my-zsh \
         save \
         update
 }
