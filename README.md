@@ -5,7 +5,7 @@ A light plugin manager for zsh inspired by Antigen.
 
 ## Usage
 
-`zgen load-oh-my-zsh` clone and run oh-my-zsh
+`zgen oh-my-zsh` clone and run oh-my-zsh
 
 `zgen load <github repo> <script>` clone the repo and run the script
 
@@ -23,7 +23,7 @@ source "${HOME}/proj/zgen/zgen.zsh"
 if [[ ! -f "${ZGEN_INIT}" ]]; then
     echo "no init script found; creating one"
 
-    zgen load-oh-my-zsh
+    zgen oh-my-zsh
 
     # plugins
     zgen load robbyrussell/oh-my-zsh plugins/git/git.plugin.zsh
