@@ -98,7 +98,16 @@ zgen() {
     fi
 }
 
+_zgen() {
+    compadd \
+        load \
+        load-oh-my-zsh \
+        save \
+        update
+}
+
 ZSH=$(-zgen-get-clone-dir "robbyrussell/oh-my-zsh")
 if [[ -f "${ZGEN_INIT}" ]]; then
     source "${ZGEN_INIT}"
 fi
+compdef _zgen zgen
