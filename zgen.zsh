@@ -82,6 +82,22 @@ zgen-load-oh-my-zsh() {
     zgen-load "${repo}" "${file}"
 }
 
+zgen() {
+    local cmd="${1}"
+    if [[ -z "${cmd}" ]]; then
+        echo "usage: zgen [load|load-oh-my-zsh|save|update]"
+        return 1
+    fi
+
+    shift
+
+    if functions "zgen-${cmd}" > /dev/null ; then
+        "zgen-${cmd}" "${@}"
+    else
+        echo "zgen: command not found: ${cmd}"
+    fi
+}
+
 ZSH=$(-zgen-get-clone-dir "robbyrussell/oh-my-zsh")
 if [[ -f "${ZGEN_INIT}" ]]; then
     source "${ZGEN_INIT}"
