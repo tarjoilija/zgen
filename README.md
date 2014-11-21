@@ -38,7 +38,7 @@ if ! zgen saved; then
     zgen load zsh-users/zsh-syntax-highlighting
 
     # theme
-    zgen oh-my-zsh themes/arrow.zsh-theme
+    zgen oh-my-zsh themes/arrow
 
     # save all to init script
     zgen save

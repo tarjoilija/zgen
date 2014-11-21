@@ -75,6 +75,9 @@ zgen-load() {
     elif [[ -f "${location}/init.zsh" ]]; then
         -zgen-source "${location}/init.zsh"
 
+    elif [[ -f "${location}.zsh-theme" ]]; then
+        -zgen-source "${location}.zsh-theme"
+
     elif ls "${location}" | grep -l "\.plugin\.zsh" &> /dev/null; then
         for script (${location}/*\.plugin\.zsh(N)) -zgen-source "${script}"
 
