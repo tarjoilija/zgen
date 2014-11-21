@@ -86,6 +86,10 @@ zgen-load() {
     fi
 }
 
+zgen-saved() {
+    [[ -f "${ZGEN_INIT}" ]] && return 0 || return 1
+}
+
 zgen-oh-my-zsh() {
     local repo="robbyrussell/oh-my-zsh"
     local file="${1:-oh-my-zsh.sh}"

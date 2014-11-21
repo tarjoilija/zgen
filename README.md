@@ -13,6 +13,8 @@ A light plugin manager for zsh inspired by Antigen.
 
 `zgen save` save all loaded scripts into an init script so they'll get run each time you source zgen
 
+`zgen saved` returns 0 if there's an init script
+
 `zgen update` update all repositories
 
 ## Example .zshrc
@@ -21,9 +23,9 @@ A light plugin manager for zsh inspired by Antigen.
 # load zgen
 source "${HOME}/proj/zgen/zgen.zsh"
 
-# check if there's an init script
-if [[ ! -f "${ZGEN_INIT}" ]]; then
-    echo "no init script found; creating one"
+# check if there's no init script
+if ! zgen saved; then
+    echo "creating a zgen save"
 
     zgen oh-my-zsh
 
