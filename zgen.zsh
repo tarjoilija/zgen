@@ -61,6 +61,7 @@ zgen-load() {
     local repo=${1}
     local file=${2}
     local dir=$(-zgen-get-clone-dir "${repo}")
+    local location=${dir}/${file}
 
     # clone repo if not present
     if [[ ! -d "${dir}" ]]; then
@@ -68,8 +69,18 @@ zgen-load() {
     fi
 
     # source the file
-    if [[ -f "${dir}/${file}" ]]; then
-        -zgen-source "${dir}/${file}"
+    if [[ -f "${location}" ]]; then
+        -zgen-source "${location}"
+
+    elif [[ -f "${location}/init.zsh" ]]; then
+        -zgen-source "${location}/init.zsh"
+
+    elif ls "${location}" | grep -l "\.plugin\.zsh" &> /dev/null; then
+        for script (${location}/*\.plugin\.zsh(N)) -zgen-source "${script}"
+
+    elif ls "${location}" | grep -l "\.zsh" &> /dev/null; then
+        for script (${location}/*\.zsh(N)) -zgen-source "${script}"
+
     else
         echo "zgen: failed to load ${dir}"
     fi
@@ -77,7 +88,7 @@ zgen-load() {
 
 zgen-oh-my-zsh() {
     local repo="robbyrussell/oh-my-zsh"
-    local file="oh-my-zsh.sh"
+    local file="${1:-oh-my-zsh.sh}"
 
     zgen-load "${repo}" "${file}"
 }
