@@ -15,7 +15,7 @@ A light plugin manager for zsh inspired by Antigen.
 
 `zgen saved` returns 0 if there's an init script
 
-`zgen update` update all repositories
+`zgen update` update all repositories and remove the init script
 
 ## Example .zshrc
 

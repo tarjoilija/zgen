@@ -45,6 +45,10 @@ fi
 zgen-update() {
     find "${ZGEN_DIR}" -maxdepth 2 -mindepth 2 -type d -exec \
         git --git-dir={}/.git --work-tree={} pull origin master \;
+
+    if [[ -f "${ZGEN_INIT}" ]]; then
+        rm "${ZGEN_INIT}"
+    fi
 }
 
 zgen-save() {
