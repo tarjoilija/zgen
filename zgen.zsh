@@ -1,6 +1,8 @@
 autoload -U compinit
 compinit
 
+local ZGEN_SOURCE=$(dirname $0)
+
 if [[ -z "${ZGEN_DIR}" ]]; then
     ZGEN_DIR="${HOME}/.zgen"
 fi
@@ -120,6 +122,16 @@ zgen-saved() {
     [[ -f "${ZGEN_INIT}" ]] && return 0 || return 1
 }
 
+zgen-selfupdate() {
+    if [ -d ${ZGEN_SOURCE}/.git ]; then
+        pushd ${ZGEN_SOURCE}
+        git pull
+        popd
+    else
+        echo "zgen is not running from a git repository, so it is not possible to selfupdate"
+    fi
+}
+
 zgen-oh-my-zsh() {
     local repo="robbyrussell/oh-my-zsh"
     local file="${1:-oh-my-zsh.sh}"
@@ -130,7 +142,7 @@ zgen-oh-my-zsh() {
 zgen() {
     local cmd="${1}"
     if [[ -z "${cmd}" ]]; then
-        echo "usage: zgen [load|oh-my-zsh|save|update]"
+        echo "usage: zgen [load|oh-my-zsh|save|selfupdate|update]"
         return 1
     fi
 
@@ -148,6 +160,7 @@ _zgen() {
         load \
         oh-my-zsh \
         save \
+        selfupdate \
         update
 }
 
