@@ -85,6 +85,7 @@ zgen-load() {
     if [[ -f "${location}" ]]; then
         -zgen-source "${location}"
 
+    # Prezto modules have init.zsh files
     elif [[ -f "${location}/init.zsh" ]]; then
         -zgen-source "${location}/init.zsh"
 
@@ -97,6 +98,7 @@ zgen-load() {
     elif [[ -f "${location}.zsh.plugin" ]]; then
         -zgen-source "${location}.zsh.plugin"
 
+    # Classic oh-my-zsh plugins have foo.plugin.zsh
     elif ls "${location}" | grep -l "\.plugin\.zsh" &> /dev/null; then
         for script (${location}/*\.plugin\.zsh(N)) -zgen-source "${script}"
 
