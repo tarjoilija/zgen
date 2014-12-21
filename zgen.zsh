@@ -54,6 +54,9 @@ fi
     if [[ ! "${ZGEN_LOADED[@]}" =~ ${file} ]]; then
         ZGEN_LOADED+="${file}"
     fi
+
+    # Add to $fpath, for completion(s).
+    fpath=($(dirname ${file}) $fpath)
 }
 
 zgen-update() {
