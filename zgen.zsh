@@ -1,3 +1,6 @@
+autoload -U compinit
+compinit
+
 if [[ -z "${ZGEN_DIR}" ]]; then
     ZGEN_DIR="${HOME}/.zgen"
 fi
