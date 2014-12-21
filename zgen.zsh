@@ -13,13 +13,21 @@ fi
 -zgen-get-clone-dir() {
     local repo=${1}
 
-    echo "${ZGEN_DIR}/${repo}"
+    if [ -d "${repo}/.git" ]; then
+        echo "${ZGEN_DIR}/local/$(basename ${repo})"
+    else
+        echo "${ZGEN_DIR}/${repo}"
+    fi
 }
 
 -zgen-get-clone-url() {
     local repo=${1}
 
-    echo "https://github.com/${repo}.git"
+    if [ -d "${repo}/.git" ]; then
+        echo ${repo}
+    else
+        echo "https://github.com/${repo}.git"
+    fi
 }
 
 -zgen-clone() {
@@ -29,6 +37,7 @@ fi
 
     mkdir -p "${dir}"
     git clone "${url}" "${dir}"
+    echo
 }
 
 -zgen-source() {
@@ -76,17 +85,28 @@ zgen-load() {
     if [[ -f "${location}" ]]; then
         -zgen-source "${location}"
 
+    # Prezto modules have init.zsh files
     elif [[ -f "${location}/init.zsh" ]]; then
         -zgen-source "${location}/init.zsh"
 
     elif [[ -f "${location}.zsh-theme" ]]; then
         -zgen-source "${location}.zsh-theme"
 
+    elif [[ -f "${location}.zshplugin" ]]; then
+        -zgen-source "${location}.zshplugin"
+
+    elif [[ -f "${location}.zsh.plugin" ]]; then
+        -zgen-source "${location}.zsh.plugin"
+
+    # Classic oh-my-zsh plugins have foo.plugin.zsh
     elif ls "${location}" | grep -l "\.plugin\.zsh" &> /dev/null; then
         for script (${location}/*\.plugin\.zsh(N)) -zgen-source "${script}"
 
     elif ls "${location}" | grep -l "\.zsh" &> /dev/null; then
         for script (${location}/*\.zsh(N)) -zgen-source "${script}"
+
+    elif ls "${location}" | grep -l "\.sh" &> /dev/null; then
+        for script (${location}/*\.sh(N)) -zgen-source "${script}"
 
     else
         echo "zgen: failed to load ${dir}"
