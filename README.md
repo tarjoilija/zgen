@@ -1,25 +1,33 @@
 zgen
 ====
 
-A light plugin manager for zsh inspired by Antigen.
+A lightweight plugin manager for ZSH inspired by Antigen.
 
 ## Usage
 
-`zgen oh-my-zsh` clone and run oh-my-zsh
+    zgen oh-my-zsh
+Clone and run oh-my-zsh.
 
-`zgen oh-my-zsh <script>` shortcut for the command below
+    zgen oh-my-zsh <script>
+Run a script from oh-my-zsh.
 
-`zgen completions <github repo> <subdirectory> [branch]` clone the repo, then add it (or <subdirectory>, if you gave it that argument) to fpath. Useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`.
+    zgen completions <github repo> [subdirectory] [branch]
+Clone the repo, then add it (or <subdirectory>, if you gave it that argument) to fpath. Useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`.
 
-`zgen load <github repo> <script> [branch]` clone the repo and run the script
+    zgen load <github repo> <script> [branch]
+Clone the repo and run a script.
 
-`zgen save` save all loaded scripts into an init script so they'll get run each time you source zgen
+    zgen save
+Save all loaded scripts into an init script so they'll get run each time you source zgen.
 
-`zgen saved` returns 0 if there's an init script
+    zgen saved
+Returns 0 if an init script exists.
 
-`zgen selfupdate` update zgen framework
+    zgen selfupdate
+Update zgen framework.
 
-`zgen update` update all repositories and remove the init script
+    zgen update
+Update all repositories and remove the init script.
 
 
 ## Example .zshrc
@@ -30,7 +38,7 @@ source "${HOME}/proj/zgen/zgen.zsh"
 
 # check if there's no init script
 if ! zgen saved; then
-    echo "creating a zgen save"
+    echo "Creating a zgen save"
 
     zgen oh-my-zsh
 
