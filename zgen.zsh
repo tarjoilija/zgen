@@ -15,6 +15,10 @@ if [[ -z "${ZGEN_LOADED}" ]]; then
     ZGEN_LOADED=()
 fi
 
+if [[ -z "${ZGEN_COMPLETIONS}" ]]; then
+    ZGEN_COMPLETIONS=()
+fi
+
 -zgen-get-clone-dir() {
     local repo=${1}
 
@@ -55,8 +59,11 @@ fi
         ZGEN_LOADED+="${file}"
     fi
 
-    # Add to $fpath, for completion(s).
-    fpath=($(dirname ${file}) $fpath)
+    completion_path=$(dirname ${file})
+    # Add the directory to ZGEN_COMPLETIONS array if not there already
+    if [[ ! "${ZGEN_COMPLETIONS[@]}" =~ ${completion_path} ]]; then
+        ZGEN_COMPLETIONS+="${completion_path}"
+    fi
 }
 
 zgen-update() {
@@ -76,6 +83,9 @@ zgen-save() {
     for file in "${ZGEN_LOADED[@]}"; do
         echo "-zgen-source \"$file\"" >> "${ZGEN_INIT}"
     done
+
+    # Set up fpath
+    echo "fpath=(\$fpath $ZGEN_COMPLETIONS )" >> ${ZGEN_INIT}
 }
 
 zgen-load() {
