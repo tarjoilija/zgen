@@ -21,11 +21,12 @@ fi
 
 -zgen-get-clone-dir() {
     local repo=${1}
+    local branch=${2:-master}
 
     if [ -d "${repo}/.git" ]; then
-        echo "${ZGEN_DIR}/local/$(basename ${repo})"
+        echo "${ZGEN_DIR}/local/$(basename ${repo})-${branch}"
     else
-        echo "${ZGEN_DIR}/${repo}"
+        echo "${ZGEN_DIR}/${repo}-${branch}"
     fi
 }
 
@@ -42,10 +43,11 @@ fi
 -zgen-clone() {
     local repo=${1}
     local dir=${2}
+    local branch=${3:-master}
     local url=$(-zgen-get-clone-url "${repo}")
 
     mkdir -p "${dir}"
-    git clone "${url}" "${dir}"
+    git clone -b "${branch}" "${url}" "${dir}"
     echo
 }
 
@@ -68,7 +70,7 @@ fi
 
 zgen-update() {
     find "${ZGEN_DIR}" -maxdepth 2 -mindepth 2 -type d -exec \
-        git --git-dir={}/.git --work-tree={} pull origin master \;
+        git --git-dir={}/.git --work-tree={} pull \;
 
     if [[ -f "${ZGEN_INIT}" ]]; then
         rm "${ZGEN_INIT}"
@@ -90,7 +92,8 @@ zgen-save() {
 
 zgen-completions() {
     local repo=${1}
-    local dir=$(-zgen-get-clone-dir "${repo}")
+    local branch=${3:-master}
+    local dir=$(-zgen-get-clone-dir "${repo}" "${branch}")
 
     if [[ -z "${2}" ]]; then
         local completion_path="${dir}"
@@ -100,7 +103,7 @@ zgen-completions() {
 
     # clone repo if not present
     if [[ ! -d "${dir}" ]]; then
-        -zgen-clone "${repo}" "${dir}"
+        -zgen-clone "${repo}" "${dir}" "${branch}"
     fi
 
     if [[ -d "${completion_path}" ]]; then
@@ -118,12 +121,13 @@ zgen-completions() {
 zgen-load() {
     local repo=${1}
     local file=${2}
-    local dir=$(-zgen-get-clone-dir "${repo}")
+    local branch=${3:-master}
+    local dir=$(-zgen-get-clone-dir "${repo}" "${branch}")
     local location=${dir}/${file}
 
     # clone repo if not present
     if [[ ! -d "${dir}" ]]; then
-        -zgen-clone "${repo}" "${dir}"
+        -zgen-clone "${repo}" "${dir}" "${branch}"
     fi
 
     # source the file
@@ -198,6 +202,7 @@ zgen() {
 
 _zgen() {
     compadd \
+        completions \
         load \
         oh-my-zsh \
         save \
@@ -205,7 +210,7 @@ _zgen() {
         update
 }
 
-ZSH=$(-zgen-get-clone-dir "robbyrussell/oh-my-zsh")
+ZSH=$(-zgen-get-clone-dir "robbyrussell/oh-my-zsh" "master")
 if [[ -f "${ZGEN_INIT}" ]]; then
     source "${ZGEN_INIT}"
 fi
