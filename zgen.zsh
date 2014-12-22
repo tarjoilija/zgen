@@ -15,6 +15,10 @@ if [[ -z "${ZGEN_LOADED}" ]]; then
     ZGEN_LOADED=()
 fi
 
+if [[ -z "${ZGEN_COMPLETIONS}" ]]; then
+    ZGEN_COMPLETIONS=()
+fi
+
 -zgen-get-clone-dir() {
     local repo=${1}
 
@@ -29,7 +33,7 @@ fi
     local repo=${1}
 
     if [ -d "${repo}/.git" ]; then
-        echo ${repo}
+        echo "${repo}"
     else
         echo "https://github.com/${repo}.git"
     fi
@@ -55,8 +59,11 @@ fi
         ZGEN_LOADED+="${file}"
     fi
 
-    # Add to $fpath, for completion(s).
-    fpath=($(dirname ${file}) $fpath)
+    completion_path=$(dirname ${file})
+    # Add the directory to ZGEN_COMPLETIONS array if not there already
+    if [[ ! "${ZGEN_COMPLETIONS[@]}" =~ ${completion_path} ]]; then
+        ZGEN_COMPLETIONS+="${completion_path}"
+    fi
 }
 
 zgen-update() {
@@ -76,6 +83,36 @@ zgen-save() {
     for file in "${ZGEN_LOADED[@]}"; do
         echo "-zgen-source \"$file\"" >> "${ZGEN_INIT}"
     done
+
+    # Set up fpath
+    echo "fpath=(\$fpath $ZGEN_COMPLETIONS )" >> "${ZGEN_INIT}"
+}
+
+zgen-completions() {
+    local repo=${1}
+    local dir=$(-zgen-get-clone-dir "${repo}")
+
+    if [[ -z "${2}" ]]; then
+        local completion_path="${dir}"
+    else
+        local completion_path="${dir}/${2}"
+    fi
+
+    # clone repo if not present
+    if [[ ! -d "${dir}" ]]; then
+        -zgen-clone "${repo}" "${dir}"
+    fi
+
+    if [[ -d "${completion_path}" ]]; then
+        # Add the directory to ZGEN_COMPLETIONS array unless already present
+        if [[ ! "${ZGEN_COMPLETIONS[@]}" =~ ${completion_path} ]]; then
+            ZGEN_COMPLETIONS+="${completion_path}"
+        fi
+    else
+        if [[ ! -z "${2}" ]]; then
+            echo "Could not find ${2} in ${repo}"
+        fi
+    fi
 }
 
 zgen-load() {
@@ -132,6 +169,7 @@ zgen-selfupdate() {
         popd
     else
         echo "zgen is not running from a git repository, so it is not possible to selfupdate"
+        return 1
     fi
 }
 
@@ -145,7 +183,7 @@ zgen-oh-my-zsh() {
 zgen() {
     local cmd="${1}"
     if [[ -z "${cmd}" ]]; then
-        echo "usage: zgen [load|oh-my-zsh|save|selfupdate|update]"
+        echo "usage: zgen [completions|load|oh-my-zsh|save|selfupdate|update]"
         return 1
     fi
 
