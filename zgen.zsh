@@ -88,6 +88,33 @@ zgen-save() {
     echo "fpath=(\$fpath $ZGEN_COMPLETIONS )" >> "${ZGEN_INIT}"
 }
 
+zgen-completions() {
+    local repo=${1}
+    local dir=$(-zgen-get-clone-dir "${repo}")
+
+    if [[ -z "${2}" ]]; then
+        local completion_path="${dir}"
+    else
+        local completion_path="${dir}/${2}"
+    fi
+
+    # clone repo if not present
+    if [[ ! -d "${dir}" ]]; then
+        -zgen-clone "${repo}" "${dir}"
+    fi
+
+    if [[ -d "${completion_path}" ]]; then
+        # Add the directory to ZGEN_COMPLETIONS array unless already present
+        if [[ ! "${ZGEN_COMPLETIONS[@]}" =~ ${completion_path} ]]; then
+            ZGEN_COMPLETIONS+="${completion_path}"
+        fi
+    else
+        if [[ ! -z "${2}" ]]; then
+            echo "Could not find ${2} in ${repo}"
+        fi
+    fi
+}
+
 zgen-load() {
     local repo=${1}
     local file=${2}
@@ -156,7 +183,7 @@ zgen-oh-my-zsh() {
 zgen() {
     local cmd="${1}"
     if [[ -z "${cmd}" ]]; then
-        echo "usage: zgen [load|oh-my-zsh|save|selfupdate|update]"
+        echo "usage: zgen [completions|load|oh-my-zsh|save|selfupdate|update]"
         return 1
     fi
 

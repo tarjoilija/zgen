@@ -9,13 +9,18 @@ A light plugin manager for zsh inspired by Antigen.
 
 `zgen oh-my-zsh <script>` shortcut for the command below
 
+`zgen completions <github repo> <subdirectory>` clone the repo, then add it (or <subdirectory>, if you gave it that argument) to fpath. Useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`.
+
 `zgen load <github repo> <script>` clone the repo and run the script
 
 `zgen save` save all loaded scripts into an init script so they'll get run each time you source zgen
 
 `zgen saved` returns 0 if there's an init script
 
+`zgen selfupdate` update zgen framework
+
 `zgen update` update all repositories and remove the init script
+
 
 ## Example .zshrc
 
@@ -37,6 +42,10 @@ if ! zgen saved; then
     zgen oh-my-zsh plugins/sudo
     zgen load zsh-users/zsh-syntax-highlighting
     zgen load /path/to/super-secret-private-plugin
+
+    # completion-only repositories. Add optional path argument to specify
+    # what subdirectory of the repository to add to your fpath.
+    zgen completions zsh-users/zsh-completions src
 
     # theme
     zgen oh-my-zsh themes/arrow
