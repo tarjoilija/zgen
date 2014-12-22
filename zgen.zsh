@@ -33,7 +33,7 @@ fi
     local repo=${1}
 
     if [ -d "${repo}/.git" ]; then
-        echo ${repo}
+        echo "${repo}"
     else
         echo "https://github.com/${repo}.git"
     fi
@@ -85,7 +85,7 @@ zgen-save() {
     done
 
     # Set up fpath
-    echo "fpath=(\$fpath $ZGEN_COMPLETIONS )" >> ${ZGEN_INIT}
+    echo "fpath=(\$fpath $ZGEN_COMPLETIONS )" >> "${ZGEN_INIT}"
 }
 
 zgen-load() {
@@ -142,6 +142,7 @@ zgen-selfupdate() {
         popd
     else
         echo "zgen is not running from a git repository, so it is not possible to selfupdate"
+        return 1
     fi
 }
 
