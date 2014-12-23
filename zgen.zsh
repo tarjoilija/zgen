@@ -87,7 +87,7 @@ zgen-save() {
     echo "# This file will be overwritten the next time you run zgen save" >> "${ZGEN_INIT}"
     echo "#" >> "${ZGEN_INIT}"
     for file in "${ZGEN_LOADED[@]}"; do
-        echo "-zgen-source \"$file\"" >> "${ZGEN_INIT}"
+        echo "source \"$file\"" >> "${ZGEN_INIT}"
     done
 
     # Set up fpath
@@ -96,14 +96,6 @@ zgen-save() {
     echo "# Add our plugins and completions to fpath">> "${ZGEN_INIT}"
     echo "#" >> "${ZGEN_INIT}"
     echo "fpath=(\$fpath $ZGEN_COMPLETIONS )" >> "${ZGEN_INIT}"
-
-    # Reset
-    echo >> "${ZGEN_INIT}"
-    echo "#" >> "${ZGEN_INIT}"
-    echo "# Clear ZGEN_LOADED and ZGEN_COMPLETIONS per #7">> "${ZGEN_INIT}"
-    echo "#" >> "${ZGEN_INIT}"
-    echo "ZGEN_LOADED=()" >> "${ZGEN_INIT}"
-    echo "ZGEN_COMPLETIONS=()" >> "${ZGEN_INIT}"
 }
 
 zgen-completions() {
