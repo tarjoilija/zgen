@@ -3,7 +3,7 @@ zgen
 
 A lightweight plugin manager for ZSH inspired by Antigen. Our goal is to have a minimal overhead when starting up the shell because nobody likes waiting. The script generates a static init.zsh file which does nothing but sources your plugins and appends them to fpath. The downside is that you have to update your plugins manually.
 
-My current zgen setup takes 193ms to load where Antigen took 830ms with the same plugins.
+My current zgen setup takes 208ms to load where Antigen takes 1324ms with the same plugins.
 
 ## Usage
 
@@ -13,7 +13,7 @@ Clone and run oh-my-zsh.
     zgen oh-my-zsh <script>
 Run a script from oh-my-zsh.
 
-    zgen load <github repo> <script> [branch]
+    zgen load <github repo> [script] [branch]
 Clone the repo and run a script.
 
     zgen completions <github repo> [subdirectory] [branch]
