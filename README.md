@@ -1,38 +1,39 @@
-zgen
-====
+## zgen
 
 A lightweight plugin manager for ZSH inspired by Antigen. Our goal is to have a minimal overhead when starting up the shell because nobody likes waiting. The script generates a static init.zsh file which does nothing but sources your plugins and appends them to fpath. The downside is that you have to update your plugins manually.
 
 My current zgen setup takes 208ms to load where Antigen takes 1324ms with the same plugins.
 
-## Usage
+### Usage
 
+#### Clone and run oh-my-zsh
     zgen oh-my-zsh
-Clone and run oh-my-zsh.
-
+    
+#### Run a script from oh-my-zsh
     zgen oh-my-zsh <script>
-Run a script from oh-my-zsh.
 
+#### Clone the repo and run a script
     zgen load <github repo> [script] [branch]
-Clone the repo and run a script.
 
+#### Clone the repo, then add it to `fpath`
     zgen completions <github repo> [subdirectory] [branch]
-Clone the repo, then add it (or <subdirectory>, if you gave it that argument) to fpath. Useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`.
+This also works with an optional `subdirectory`. Useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`.
 
+#### Save all loaded scripts into an init script
     zgen save
-Save all loaded scripts into an init script so they'll get run each time you source zgen.
+We do this so they'll get run each time you source zgen.
 
+#### Check for init script
     zgen saved
 Returns 0 if an init script exists.
 
+#### Update zgen framework
     zgen selfupdate
-Update zgen framework.
 
+#### Update all repositories and remove the init script
     zgen update
-Update all repositories and remove the init script.
 
-
-## Example .zshrc
+### Example .zshrc
 
 ```zsh
 # load zgen
