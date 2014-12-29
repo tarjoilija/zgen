@@ -25,7 +25,7 @@ We do this so they'll get run each time you source zgen.
 
 #### Check for init script
     zgen saved
-Returns 0 if an init script exists
+Returns 0 if an init script exists.
 
 #### Update zgen framework
     zgen selfupdate
