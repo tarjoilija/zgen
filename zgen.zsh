@@ -44,7 +44,7 @@ fi
     local url=$(-zgen-get-clone-url "${repo}")
 
     mkdir -p "${dir}"
-    git clone -b "${branch}" "${url}" "${dir}"
+    git clone --recursive -b "${branch}" "${url}" "${dir}"
     echo
 }
 
@@ -66,8 +66,11 @@ fi
 }
 
 zgen-update() {
-    find "${ZGEN_DIR}" -maxdepth 2 -mindepth 2 -type d -exec \
-        git --git-dir={}/.git --work-tree={} pull \;
+    for repo in ${ZGEN_DIR}/*/*; do
+        (cd $repo \
+            && git pull \
+            && git submodule update --recursive)
+    done
 
     if [[ -f "${ZGEN_INIT}" ]]; then
         rm "${ZGEN_INIT}"
