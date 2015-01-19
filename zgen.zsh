@@ -48,21 +48,28 @@ fi
     echo
 }
 
+-zgen-add-to-fpath() {
+    local completion_path="${1}"
+
+    # Add the directory to ZGEN_COMPLETIONS array if not present
+    if [[ ! "${ZGEN_COMPLETIONS[@]}" =~ ${completion_path} ]]; then
+        ZGEN_COMPLETIONS+="${completion_path}"
+    fi
+}
+
 -zgen-source() {
     local file="${1}"
 
     source "${file}"
 
-    # add to the array if not loaded already
+    # Add to ZGEN_LOADED array if not present
     if [[ ! "${ZGEN_LOADED[@]}" =~ ${file} ]]; then
         ZGEN_LOADED+="${file}"
     fi
 
     completion_path=$(dirname ${file})
-    # Add the directory to ZGEN_COMPLETIONS array if not there already
-    if [[ ! "${ZGEN_COMPLETIONS[@]}" =~ ${completion_path} ]]; then
-        ZGEN_COMPLETIONS+="${completion_path}"
-    fi
+
+    -zgen-add-to-fpath "${completion_path}"
 }
 
 zgen-update() {
@@ -104,31 +111,9 @@ zgen-save() {
 }
 
 zgen-completions() {
-    local repo=${1}
-    local branch=${3:-master}
-    local dir=$(-zgen-get-clone-dir "${repo}" "${branch}")
+    echo "zgen: 'completions' is deprecated, please use 'load' instead"
 
-    if [[ -z "${2}" ]]; then
-        local completion_path="${dir}"
-    else
-        local completion_path="${dir}/${2}"
-    fi
-
-    # clone repo if not present
-    if [[ ! -d "${dir}" ]]; then
-        -zgen-clone "${repo}" "${dir}" "${branch}"
-    fi
-
-    if [[ -d "${completion_path}" ]]; then
-        # Add the directory to ZGEN_COMPLETIONS array unless already present
-        if [[ ! "${ZGEN_COMPLETIONS[@]}" =~ ${completion_path} ]]; then
-            ZGEN_COMPLETIONS+="${completion_path}"
-        fi
-    else
-        if [[ ! -z "${2}" ]]; then
-            echo "zgen: Could not find ${2} in ${repo}"
-        fi
-    fi
+    zgen-load "${@}"
 }
 
 zgen-load() {
@@ -170,8 +155,12 @@ zgen-load() {
     elif ls "${location}" | grep -l "\.sh" &> /dev/null; then
         for script (${location}/*\.sh(N)) -zgen-source "${script}"
 
+    # Completions
+    elif [[ -d "${location}" ]]; then
+        -zgen-add-to-fpath "${location}"
+
     else
-        echo "zgen: failed to load ${dir}"
+        echo "zgen: Failed to load ${dir}"
     fi
 }
 

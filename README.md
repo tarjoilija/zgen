@@ -6,24 +6,22 @@ My current zgen setup takes 208ms to load where Antigen takes 1324ms with the sa
 
 ### Usage
 
-#### Clone and run oh-my-zsh
+#### Load oh-my-zsh base
     zgen oh-my-zsh
-    
-#### Run a script from oh-my-zsh
+
+#### Load oh-my-zsh plugins
     zgen oh-my-zsh <script>
+This is a shortcut for `zgen load`.
 
-#### Clone the repo and run a script
-    zgen load <github repo> [script] [branch]
-
-#### Clone the repo, then add it to `fpath`
-    zgen completions <github repo> [subdirectory] [branch]
-This also works with an optional `subdirectory`. Useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`.
+#### Load plugins and completions
+    zgen load <github repo> [script|subdirectory] [branch]
+Similar to `antigen bundle`. The optional `subdirectory` is useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`.
 
 #### Save all loaded scripts into an init script
     zgen save
 We do this so they'll get run each time you source zgen.
 
-#### Check for init script
+#### Check for an init script
     zgen saved
 Returns 0 if an init script exists.
 
