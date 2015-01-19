@@ -6,24 +6,22 @@ My current zgen setup takes 208ms to load where Antigen takes 1324ms with the sa
 
 ### Usage
 
-#### Clone and run oh-my-zsh
+#### Load oh-my-zsh base
     zgen oh-my-zsh
-    
-#### Run a script from oh-my-zsh
+
+#### Load oh-my-zsh plugins
     zgen oh-my-zsh <script>
+This is a shortcut for `zgen load`.
 
-#### Clone the repo and run a script
-    zgen load <github repo> [script] [branch]
-
-#### Clone the repo, then add it to `fpath`
-    zgen completions <github repo> [subdirectory] [branch]
-This also works with an optional `subdirectory`. Useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`.
+#### Load plugins and completions
+    zgen load <github repo> [script|subdirectory] [branch]
+Similar to `antigen bundle`. The optional `subdirectory` is useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`. If no scripts are found it adds the subdirectory to fpath.
 
 #### Save all loaded scripts into an init script
     zgen save
 We do this so they'll get run each time you source zgen.
 
-#### Check for init script
+#### Check for an init script
     zgen saved
 Returns 0 if an init script exists.
 
@@ -52,9 +50,8 @@ if ! zgen saved; then
     zgen load zsh-users/zsh-syntax-highlighting
     zgen load /path/to/super-secret-private-plugin
 
-    # completion-only repositories. Add optional path argument to specify
-    # what subdirectory of the repository to add to your fpath.
-    zgen completions zsh-users/zsh-completions src
+    # completions
+    zgen load zsh-users/zsh-completions src
 
     # theme
     zgen oh-my-zsh themes/arrow
