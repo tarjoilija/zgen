@@ -53,7 +53,7 @@ fi
 
     # Add the directory to ZGEN_COMPLETIONS array if not present
     if [[ ! "${ZGEN_COMPLETIONS[@]}" =~ ${completion_path} ]]; then
-        ZGEN_COMPLETIONS+="${completion_path}"
+        ZGEN_COMPLETIONS+=("${completion_path}")
     fi
 }
 
@@ -64,7 +64,7 @@ fi
 
     # Add to ZGEN_LOADED array if not present
     if [[ ! "${ZGEN_LOADED[@]}" =~ "${file}" ]]; then
-        ZGEN_LOADED+="${file}"
+        ZGEN_LOADED+=("${file}")
     fi
 
     completion_path="$(dirname ${file})"
