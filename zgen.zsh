@@ -170,9 +170,8 @@ zgen-saved() {
 
 zgen-selfupdate() {
     if [ -d "${ZGEN_SOURCE}/.git" ]; then
-        pushd "${ZGEN_SOURCE}"
-        git pull
-        popd
+        (cd "${ZGEN_SOURCE}" \
+            && git pull)
     else
         echo "zgen is not running from a git repository, so it is not possible to selfupdate"
         return 1
