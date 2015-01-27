@@ -1,4 +1,4 @@
-local ZGEN_SOURCE=$(dirname $0)
+local ZGEN_SOURCE="$(dirname ${0})"
 
 if [[ -z "${ZGEN_DIR}" ]]; then
     ZGEN_DIR="${HOME}/.zgen"
@@ -17,8 +17,8 @@ if [[ -z "${ZGEN_COMPLETIONS}" ]]; then
 fi
 
 -zgen-get-clone-dir() {
-    local repo=${1}
-    local branch=${2:-master}
+    local repo="${1}"
+    local branch="${2:-master}"
 
     if [ -d "${repo}/.git" ]; then
         echo "${ZGEN_DIR}/local/$(basename ${repo})-${branch}"
@@ -28,7 +28,7 @@ fi
 }
 
 -zgen-get-clone-url() {
-    local repo=${1}
+    local repo="${1}"
 
     if [ -d "${repo}/.git" ]; then
         echo "${repo}"
@@ -38,10 +38,10 @@ fi
 }
 
 -zgen-clone() {
-    local repo=${1}
-    local dir=${2}
-    local branch=${3:-master}
-    local url=$(-zgen-get-clone-url "${repo}")
+    local repo="${1}"
+    local dir="${2}"
+    local branch="${3:-master}"
+    local url="$(-zgen-get-clone-url ${repo})"
 
     mkdir -p "${dir}"
     git clone --recursive -b "${branch}" "${url}" "${dir}"
@@ -63,18 +63,18 @@ fi
     source "${file}"
 
     # Add to ZGEN_LOADED array if not present
-    if [[ ! "${ZGEN_LOADED[@]}" =~ ${file} ]]; then
+    if [[ ! "${ZGEN_LOADED[@]}" =~ "${file}" ]]; then
         ZGEN_LOADED+="${file}"
     fi
 
-    completion_path=$(dirname ${file})
+    completion_path="$(dirname ${file})"
 
     -zgen-add-to-fpath "${completion_path}"
 }
 
 zgen-update() {
-    for repo in ${ZGEN_DIR}/*/*; do
-        (cd $repo \
+    for repo in "${ZGEN_DIR}"/*/*; do
+        (cd "${repo}" \
             && git pull \
             && git submodule update --recursive)
     done
@@ -96,7 +96,7 @@ zgen-save() {
     echo "# This file will be overwritten the next time you run zgen save" >> "${ZGEN_INIT}"
     echo "#" >> "${ZGEN_INIT}"
     for file in "${ZGEN_LOADED[@]}"; do
-        echo "source \"$file\"" >> "${ZGEN_INIT}"
+        echo "source \"${file}\"" >> "${ZGEN_INIT}"
     done
 
     # Set up fpath
@@ -104,7 +104,7 @@ zgen-save() {
     echo "#" >> "${ZGEN_INIT}"
     echo "# Add our plugins and completions to fpath">> "${ZGEN_INIT}"
     echo "#" >> "${ZGEN_INIT}"
-    echo "fpath=($ZGEN_COMPLETIONS \$fpath)" >> "${ZGEN_INIT}"
+    echo "fpath=(${ZGEN_COMPLETIONS} \${fpath})" >> "${ZGEN_INIT}"
 
     echo "zgen: Creating ${ZGEN_DIR}/zcompdump"
     compinit -d "${ZGEN_DIR}/zcompdump"
@@ -117,11 +117,11 @@ zgen-completions() {
 }
 
 zgen-load() {
-    local repo=${1}
-    local file=${2}
-    local branch=${3:-master}
-    local dir=$(-zgen-get-clone-dir "${repo}" "${branch}")
-    local location=${dir}/${file}
+    local repo="${1}"
+    local file="${2}"
+    local branch="${3:-master}"
+    local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
+    local location="${dir}/${file}"
 
     # clone repo if not present
     if [[ ! -d "${dir}" ]]; then
@@ -169,10 +169,9 @@ zgen-saved() {
 }
 
 zgen-selfupdate() {
-    if [ -d ${ZGEN_SOURCE}/.git ]; then
-        pushd ${ZGEN_SOURCE}
-        git pull
-        popd
+    if [ -d "${ZGEN_SOURCE}/.git" ]; then
+        (cd "${ZGEN_SOURCE}" \
+            && git pull)
     else
         echo "zgen is not running from a git repository, so it is not possible to selfupdate"
         return 1
@@ -212,7 +211,7 @@ _zgen() {
         update
 }
 
-ZSH=$(-zgen-get-clone-dir "robbyrussell/oh-my-zsh" "master")
+ZSH="$(-zgen-get-clone-dir robbyrussell/oh-my-zsh master)"
 if [[ -f "${ZGEN_INIT}" ]]; then
     source "${ZGEN_INIT}"
 fi
