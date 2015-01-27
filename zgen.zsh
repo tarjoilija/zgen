@@ -96,7 +96,7 @@ zgen-save() {
     echo "# This file will be overwritten the next time you run zgen save" >> "${ZGEN_INIT}"
     echo "#" >> "${ZGEN_INIT}"
     for file in "${ZGEN_LOADED[@]}"; do
-        echo "source \"${file}\"" >> "${ZGEN_INIT}"
+        echo "source \"${(q)file}\"" >> "${ZGEN_INIT}"
     done
 
     # Set up fpath
@@ -104,7 +104,7 @@ zgen-save() {
     echo "#" >> "${ZGEN_INIT}"
     echo "# Add our plugins and completions to fpath">> "${ZGEN_INIT}"
     echo "#" >> "${ZGEN_INIT}"
-    echo "fpath=(${ZGEN_COMPLETIONS} \${fpath})" >> "${ZGEN_INIT}"
+    echo "fpath=(${(q)ZGEN_COMPLETIONS[@]} \${fpath})" >> "${ZGEN_INIT}"
 
     echo "zgen: Creating ${ZGEN_DIR}/zcompdump"
     compinit -d "${ZGEN_DIR}/zcompdump"
