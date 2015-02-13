@@ -169,7 +169,7 @@ zgen-saved() {
 }
 
 zgen-selfupdate() {
-    if [ -d "${ZGEN_SOURCE}/.git" ]; then
+    if [ -e "${ZGEN_SOURCE}/.git" ]; then
         (cd "${ZGEN_SOURCE}" \
             && git pull)
     else
