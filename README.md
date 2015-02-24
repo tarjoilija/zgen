@@ -68,3 +68,7 @@ if ! zgen saved; then
     zgen save
 fi
 ```
+
+## Other resources
+
+The [awesome-zsh-plugins](https://github.com/unixorn/awesome-zsh-plugins) list contains many zgen-compatible zsh plugins & themes that you may find useful.
