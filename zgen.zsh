@@ -220,22 +220,10 @@ zgen() {
     fi
 }
 
-_zgen() {
-    compadd \
-        clone \
-        completions \
-        list \
-        load \
-        oh-my-zsh \
-        reset \
-        save \
-        selfupdate \
-        update
-}
-
+ZGEN_SOURCE="$(dirname ${0})"
 ZSH="$(-zgen-get-clone-dir robbyrussell/oh-my-zsh master)"
 zgen-init
 
 autoload -U compinit
 compinit -d "${ZGEN_DIR}/zcompdump"
-compdef _zgen zgen
+fpath=($ZGEN_SOURCE $fpath)
