@@ -1,0 +1,14 @@
+local -a _zgen_commands
+_zgen_commands=(
+    "clone:clone plugins from repository"
+    "completions:deprecated, please use load instead"
+    "list:print init.zsh"
+    "load:clone and load plugins and completions"
+    "oh-my-zsh:load oh-my-zsh base"
+    "reset:delete the init.zsh script"
+    "save:check for init.zsh script"
+    "selfupdate:update zgen framework from repository"
+    "update:update all repositories and remove the init script"
+)
+
+_describe -t commands "zgen subcommand" _zgen_commands

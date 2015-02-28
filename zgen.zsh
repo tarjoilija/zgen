@@ -1,3 +1,4 @@
+#!/bin/zsh
 local ZGEN_SOURCE="$(dirname ${0})"
 
 if [[ -z "${ZGEN_DIR}" ]]; then
@@ -37,15 +38,16 @@ fi
     fi
 }
 
--zgen-clone() {
+zgen-clone() {
     local repo="${1}"
-    local dir="${2}"
-    local branch="${3:-master}"
+    local branch="${2:-master}"
     local url="$(-zgen-get-clone-url ${repo})"
+    local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
 
-    mkdir -p "${dir}"
-    git clone --recursive -b "${branch}" "${url}" "${dir}"
-    echo
+    if [[ ! -d "${dir}" ]]; then
+        mkdir -p "${dir}"
+        git clone --recursive -b "${branch}" "${url}" "${dir}"
+    fi
 }
 
 -zgen-add-to-fpath() {
@@ -72,22 +74,31 @@ fi
     -zgen-add-to-fpath "${completion_path}"
 }
 
-zgen-update() {
-    for repo in "${ZGEN_DIR}"/*/*; do
-        (cd "${repo}" \
-            && git pull \
-            && git submodule update --recursive)
-    done
+zgen-init() {
+    if [[ -f "${ZGEN_INIT}" ]]; then
+        source "${ZGEN_INIT}"
+    fi
+}
 
+zgen-reset() {
+    echo "zgen: Deleting ${ZGEN_INIT}"
     if [[ -f "${ZGEN_INIT}" ]]; then
         rm "${ZGEN_INIT}"
     fi
 }
 
+zgen-update() {
+    for repo in "${ZGEN_DIR}"/*/*; do
+        echo "Updating ${repo}"
+        (cd "${repo}" \
+            && git pull \
+            && git submodule update --recursive)
+    done
+    zgen-reset
+}
+
 zgen-save() {
-    if [[ -f "${ZGEN_INIT}" ]]; then
-        rm "${ZGEN_INIT}"
-    fi
+    zgen-reset
 
     echo "zgen: Creating ${ZGEN_INIT}"
 
@@ -125,7 +136,7 @@ zgen-load() {
 
     # clone repo if not present
     if [[ ! -d "${dir}" ]]; then
-        -zgen-clone "${repo}" "${dir}" "${branch}"
+        zgen-clone "${repo}" "${branch}"
     fi
 
     # source the file
@@ -168,6 +179,14 @@ zgen-saved() {
     [[ -f "${ZGEN_INIT}" ]] && return 0 || return 1
 }
 
+zgen-list() {
+    if [[ -f "${ZGEN_INIT}" ]]; then
+        cat "${ZGEN_INIT}"
+    else
+        echo "Zgen init.zsh missing, please use zgen save and then restart your shell."
+    fi
+}
+
 zgen-selfupdate() {
     if [ -e "${ZGEN_SOURCE}/.git" ]; then
         (cd "${ZGEN_SOURCE}" \
@@ -188,7 +207,7 @@ zgen-oh-my-zsh() {
 zgen() {
     local cmd="${1}"
     if [[ -z "${cmd}" ]]; then
-        echo "usage: zgen [completions|load|oh-my-zsh|save|selfupdate|update]"
+        echo "usage: zgen [clone|completions|list|load|oh-my-zsh|reset|save|selfupdate|update]"
         return 1
     fi
 
@@ -201,21 +220,10 @@ zgen() {
     fi
 }
 
-_zgen() {
-    compadd \
-        completions \
-        load \
-        oh-my-zsh \
-        save \
-        selfupdate \
-        update
-}
-
+ZGEN_SOURCE="$(dirname ${0})"
 ZSH="$(-zgen-get-clone-dir robbyrussell/oh-my-zsh master)"
-if [[ -f "${ZGEN_INIT}" ]]; then
-    source "${ZGEN_INIT}"
-fi
+zgen-init
 
 autoload -U compinit
 compinit -d "${ZGEN_DIR}/zcompdump"
-compdef _zgen zgen
+fpath=($ZGEN_SOURCE $fpath)
