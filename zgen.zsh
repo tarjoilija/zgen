@@ -98,7 +98,7 @@ zgen-update() {
 }
 
 zgen-save() {
-    zgen-init
+    zgen-reset
 
     echo "zgen: Creating ${ZGEN_INIT}"
 
@@ -207,7 +207,7 @@ zgen-oh-my-zsh() {
 zgen() {
     local cmd="${1}"
     if [[ -z "${cmd}" ]]; then
-        echo "usage: zgen [completions|load|oh-my-zsh|save|selfupdate|update|reset]"
+        echo "usage: zgen [clone|completions|list|load|oh-my-zsh|reset|save|selfupdate|update]"
         return 1
     fi
 
