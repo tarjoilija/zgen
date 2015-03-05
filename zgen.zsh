@@ -150,6 +150,9 @@ zgen-load() {
     elif [[ -f "${location}.zsh-theme" ]]; then
         -zgen-source "${location}.zsh-theme"
 
+    elif [[ -f "${location}.theme.zsh" ]]; then
+        -zgen-source "${location}.theme.zsh"
+
     elif [[ -f "${location}.zshplugin" ]]; then
         -zgen-source "${location}.zshplugin"
 
