@@ -1,5 +1,5 @@
 #!/bin/zsh
-local ZGEN_SOURCE="$(dirname ${0})"
+local ZGEN_SOURCE="$(dirname $(readlink -f ${0}))"
 
 if [[ -z "${ZGEN_DIR}" ]]; then
     ZGEN_DIR="${HOME}/.zgen"
