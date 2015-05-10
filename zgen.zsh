@@ -22,7 +22,7 @@ fi
     local repo="${1}"
     local branch="${2:-master}"
 
-    if [ -d "${repo}/.git" ]; then
+    if [[ -d "${repo}/.git" ]]; then
         echo "${ZGEN_DIR}/local/$(basename ${repo})-${branch}"
     else
         echo "${ZGEN_DIR}/${repo}-${branch}"
@@ -32,7 +32,7 @@ fi
 -zgen-get-clone-url() {
     local repo="${1}"
 
-    if [ -d "${repo}/.git" ]; then
+    if [[ -d "${repo}/.git" ]]; then
         echo "${repo}"
     else
         echo "https://github.com/${repo}.git"
@@ -190,7 +190,7 @@ zgen-list() {
 }
 
 zgen-selfupdate() {
-    if [ -e "${ZGEN_SOURCE}/.git" ]; then
+    if [[ -e "${ZGEN_SOURCE}/.git" ]]; then
         (cd "${ZGEN_SOURCE}" \
             && git pull)
     else
