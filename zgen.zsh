@@ -18,6 +18,15 @@ if [[ -z "${ZGEN_COMPLETIONS}" ]]; then
     ZGEN_COMPLETIONS=()
 fi
 
+-zgen-encode-url () {
+    # Remove characters from a url that don't work well in a filename.
+    # Inspired by -anti-get-clone-dir() method from antigen.
+    echo "$1" | sed \
+            -e 's./.-SLASH-.g' \
+            -e 's.:.-COLON-.g' \
+            -e 's.|.-PIPE-.g'
+}
+
 -zgen-get-clone-dir() {
     local repo="${1}"
     local branch="${2:-master}"
@@ -25,6 +34,12 @@ fi
     if [[ -d "${repo}/.git" ]]; then
         echo "${ZGEN_DIR}/local/$(basename ${repo})-${branch}"
     else
+        # Repo directory will be location/reponame
+        local reponame="$(basename ${repo})"
+        # Need to encode incase it is a full url with characters that don't
+        # work well in a filename.
+        local location="$(-zgen-encode-url $(dirname ${repo}))"
+        repo="${location}/${reponame}"
         echo "${ZGEN_DIR}/${repo}-${branch}"
     fi
 }
