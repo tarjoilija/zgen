@@ -35,7 +35,18 @@ fi
     if [[ -d "${repo}/.git" ]]; then
         echo "${repo}"
     else
-        echo "https://github.com/${repo}.git"
+        # Sourced from antigen url resolution logic.
+        # https://github.com/zsh-users/antigen/blob/master/antigen.zsh
+        # Expand short github url syntax: `username/reponame`.
+        if [[ $repo != git://* &&
+              $repo != https://* &&
+              $repo != http://* &&
+              $repo != ssh://* &&
+              $repo != git@github.com:*/*
+              ]]; then
+            repo="https://github.com/${repo%.git}.git"
+        fi
+        echo "${repo}"
     fi
 }
 
