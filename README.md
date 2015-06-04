@@ -58,6 +58,13 @@ if ! zgen saved; then
     zgen load zsh-users/zsh-syntax-highlighting
     zgen load /path/to/super-secret-private-plugin
 
+    # bulk load
+    zgen loadall <<EOPLUGINS
+        zsh-users/zsh-history-substring-search
+        /path/to/local/plugin
+EOPLUGINS
+    # ^ can't indent this EOPLUGINS
+
     # completions
     zgen load zsh-users/zsh-completions src
 
