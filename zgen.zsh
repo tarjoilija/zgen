@@ -1,4 +1,6 @@
 #!/bin/zsh
+autoload -U regexp-replace
+
 local ZGEN_SOURCE="$(cd "$(dirname "${0}")" && pwd -P)"
 
 
@@ -33,10 +35,11 @@ fi
 -zgen-encode-url () {
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
-    echo "$1" | sed \
-            -e 's./.-SLASH-.g' \
-            -e 's.:.-COLON-.g' \
-            -e 's.|.-PIPE-.g'
+    autoload -U regexp-replace
+    regexp-replace 1 '/' '-SLASH-'
+    regexp-replace 1 ':' '-COLON-'
+    regexp-replace 1 '\|' '-PIPE-'
+    echo $1
 }
 
 -zgen-get-clone-dir() {
@@ -164,6 +167,10 @@ zgen-completions() {
     zgen-load "${@}"
 }
 
+-zgen-path-contains() {
+  setopt localoptions nonomatch nocshnullglob nonullglob; [ -f "$1"/*"$2"(.[1]) ]
+}
+
 zgen-load() {
     if [[ "$#" == 1 && ("${1[1]}" == '/' || "${1[1]}" == '.' ) ]]; then
       local location="${1}"
@@ -173,11 +180,12 @@ zgen-load() {
       local branch="${3:-master}"
       local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
       local location="${dir}/${file}"
-    fi
+      location=${location%/}
 
-    # clone repo if not present
-    if [[ ! -d "${dir}" ]]; then
-        zgen-clone "${repo}" "${branch}"
+      # clone repo if not present
+      if [[ ! -d "${dir}" ]]; then
+          zgen-clone "${repo}" "${branch}"
+      fi
     fi
 
     # source the file
@@ -201,13 +209,13 @@ zgen-load() {
         -zgen-source "${location}.zsh.plugin"
 
     # Classic oh-my-zsh plugins have foo.plugin.zsh
-    elif ls "${location}" | grep -l "\.plugin\.zsh" &> /dev/null; then
+    elif -zgen-path-contains "${location}" ".plugin.zsh" ; then
         for script (${location}/*\.plugin\.zsh(N)) -zgen-source "${script}"
 
-    elif ls "${location}" | grep -l "\.zsh" &> /dev/null; then
+    elif -zgen-path-contains "${location}" ".zsh" ; then
         for script (${location}/*\.zsh(N)) -zgen-source "${script}"
 
-    elif ls "${location}" | grep -l "\.sh" &> /dev/null; then
+    elif -zgen-path-contains "${location}" ".sh" ; then
         for script (${location}/*\.sh(N)) -zgen-source "${script}"
 
     # Completions
