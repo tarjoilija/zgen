@@ -157,8 +157,13 @@ zgen-save() {
     echo "#" >> "${ZGEN_INIT}"
     echo "fpath=(${(q)ZGEN_COMPLETIONS[@]} \${fpath})" >> "${ZGEN_INIT}"
 
-    echo "zgen: Creating ${ZGEN_DIR}/zcompdump"
-    compinit -d "${ZGEN_DIR}/zcompdump"
+    zgen-apply --verbose
+}
+
+zgen-apply() {
+  fpath=(${(q)ZGEN_COMPLETIONS[@]} ${fpath})
+  [[ "$1" == --verbose ]] && echo "zgen: Creating ${ZGEN_DIR}/zcompdump"
+  compinit -d "${ZGEN_DIR}/zcompdump"
 }
 
 zgen-completions() {
