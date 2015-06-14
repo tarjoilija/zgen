@@ -73,7 +73,7 @@ zgen-clone() {
 
     if [[ ! -d "${dir}" ]]; then
         mkdir -p "${dir}"
-        git clone --recursive -b "${branch}" "${url}" "${dir}"
+        git clone --depth=1 --recursive -b "${branch}" "${url}" "${dir}"
     fi
 }
 
