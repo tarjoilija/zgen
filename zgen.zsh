@@ -18,6 +18,18 @@ if [[ -z "${ZGEN_COMPLETIONS}" ]]; then
     ZGEN_COMPLETIONS=()
 fi
 
+if [[ -z "${ZGEN_OH_MY_ZSH_REPO}" ]]; then
+    ZGEN_OH_MY_ZSH_REPO=robbyrussell
+fi
+
+if [[ "${ZGEN_OH_MY_ZSH_REPO}" != */* ]]; then
+    ZGEN_OH_MY_ZSH_REPO="${ZGEN_OH_MY_ZSH_REPO}/oh-my-zsh"
+fi
+
+if [[ -z "${ZGEN_OH_MY_ZSH_BRANCH}" ]]; then
+    ZGEN_OH_MY_ZSH_BRANCH=master
+fi
+
 -zgen-encode-url () {
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
@@ -153,11 +165,15 @@ zgen-completions() {
 }
 
 zgen-load() {
-    local repo="${1}"
-    local file="${2}"
-    local branch="${3:-master}"
-    local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
-    local location="${dir}/${file}"
+    if [[ "$#" == 1 && ("${1[1]}" == '/' || "${1[1]}" == '.' ) ]]; then
+      local location="${1}"
+    else
+      local repo="${1}"
+      local file="${2}"
+      local branch="${3:-master}"
+      local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
+      local location="${dir}/${file}"
+    fi
 
     # clone repo if not present
     if [[ ! -d "${dir}" ]]; then
@@ -199,7 +215,7 @@ zgen-load() {
         -zgen-add-to-fpath "${location}"
 
     else
-        echo "zgen: Failed to load ${dir}"
+        echo "zgen: Failed to load ${dir:-$location}"
     fi
 }
 
@@ -226,7 +242,7 @@ zgen-selfupdate() {
 }
 
 zgen-oh-my-zsh() {
-    local repo="robbyrussell/oh-my-zsh"
+    local repo="$ZGEN_OH_MY_ZSH_REPO"
     local file="${1:-oh-my-zsh.sh}"
 
     zgen-load "${repo}" "${file}"
@@ -248,7 +264,7 @@ zgen() {
     fi
 }
 
-ZSH="$(-zgen-get-clone-dir robbyrussell/oh-my-zsh master)"
+ZSH="$(-zgen-get-clone-dir "$ZGEN_OH_MY_ZSH_REPO" "$ZGEN_OH_MY_ZSH_BRANCH")"
 zgen-init
 fpath=($ZGEN_SOURCE $fpath)
 
