@@ -142,8 +142,18 @@ zgen-save() {
     echo "#" >> "${ZGEN_INIT}"
     echo "fpath=(${(q)ZGEN_COMPLETIONS[@]} \${fpath})" >> "${ZGEN_INIT}"
 
+    # Append path to frameworks
+    if [[ -n ${ZSH} ]]; then
+        echo "ZSH=${ZSH}" >> "${ZGEN_INIT}"
+    fi
+
     echo "zgen: Creating ${ZGEN_DIR}/zcompdump"
     compinit -d "${ZGEN_DIR}/zcompdump"
+}
+
+-zgen-append() {
+    local dir="${1}"
+    ZSH="${dir}"
 }
 
 zgen-completions() {
@@ -226,16 +236,43 @@ zgen-selfupdate() {
 }
 
 zgen-oh-my-zsh() {
-    local repo="robbyrussell/oh-my-zsh"
-    local file="${1:-oh-my-zsh.sh}"
+    local repo="${1:-robbyrussell/oh-my-zsh}"
+    local file="${2:-oh-my-zsh.sh}"
+    local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
 
     zgen-load "${repo}" "${file}"
+    -zgen-append "${dir}"
+}
+
+zgen-prezto() {
+    local repo="${1:-sorin-ionescu/prezto}"
+    local branch="${2:-master}"
+    local url="$(-zgen-get-clone-url ${repo})"
+    local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
+
+    zgen-clone "${repo}"
+
+    if [[ ! -d ".zprezto" ]]
+    then
+        # Create necessary symbolic links for prezto
+        ln -s "$dir" "${ZDOTDIR:-$HOME}/.zprezto"
+        setopt EXTENDED_GLOB
+        echo "$dir"/runcoms/^README.md(.N)
+        for rcfile in "$dir"/runcoms/^README.md(.N); do
+            local dotfile="${ZDOTDIR:-$HOME}/.${rcfile:t}"
+            [[ ! -a $dotfile ]] && ln -s "${rcfile}" "${dotfile}"
+        done
+    fi
+
+    # Behave as .zshrc as far as prezto is concerned
+    zgen-load "${repo}"
+    -zgen-append "${dir}"
 }
 
 zgen() {
     local cmd="${1}"
     if [[ -z "${cmd}" ]]; then
-        echo "usage: zgen [clone|completions|list|load|oh-my-zsh|reset|save|selfupdate|update]"
+        echo "usage: zgen [clone|completions|list|load|oh-my-zsh|prezto|reset|save|selfupdate|update]"
         return 1
     fi
 
@@ -248,7 +285,6 @@ zgen() {
     fi
 }
 
-ZSH="$(-zgen-get-clone-dir robbyrussell/oh-my-zsh master)"
 zgen-init
 fpath=($ZGEN_SOURCE $fpath)
 
