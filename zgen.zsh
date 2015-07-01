@@ -203,6 +203,22 @@ zgen-load() {
     fi
 }
 
+zgen-loadall() {
+    # shameless copy from antigen
+
+    # Bulk add many bundles at one go. Empty lines and lines starting with a `#`
+    # are ignored. Everything else is given to `zgen-load` as is, no
+    # quoting rules applied.
+
+    local line
+
+    grep '^[[:space:]]*[^[:space:]#]' | while read line; do
+        # Using `eval` so that we can use the shell-style quoting in each line
+        # piped to `antigen-bundles`.
+        eval "zgen-load $line"
+    done
+}
+
 zgen-saved() {
     [[ -f "${ZGEN_INIT}" ]] && return 0 || return 1
 }
