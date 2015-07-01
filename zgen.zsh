@@ -1,4 +1,6 @@
 #!/bin/zsh
+autoload -U regexp-replace
+
 local ZGEN_SOURCE="$(cd "$(dirname "${0}")" && pwd -P)"
 
 
@@ -18,13 +20,26 @@ if [[ -z "${ZGEN_COMPLETIONS}" ]]; then
     ZGEN_COMPLETIONS=()
 fi
 
+if [[ -z "${ZGEN_OH_MY_ZSH_REPO}" ]]; then
+    ZGEN_OH_MY_ZSH_REPO=robbyrussell
+fi
+
+if [[ "${ZGEN_OH_MY_ZSH_REPO}" != */* ]]; then
+    ZGEN_OH_MY_ZSH_REPO="${ZGEN_OH_MY_ZSH_REPO}/oh-my-zsh"
+fi
+
+if [[ -z "${ZGEN_OH_MY_ZSH_BRANCH}" ]]; then
+    ZGEN_OH_MY_ZSH_BRANCH=master
+fi
+
 -zgen-encode-url () {
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
-    echo "$1" | sed \
-            -e 's./.-SLASH-.g' \
-            -e 's.:.-COLON-.g' \
-            -e 's.|.-PIPE-.g'
+    autoload -U regexp-replace
+    regexp-replace 1 '/' '-SLASH-'
+    regexp-replace 1 ':' '-COLON-'
+    regexp-replace 1 '\|' '-PIPE-'
+    echo $1
 }
 
 -zgen-get-clone-dir() {
@@ -142,8 +157,13 @@ zgen-save() {
     echo "#" >> "${ZGEN_INIT}"
     echo "fpath=(${(q)ZGEN_COMPLETIONS[@]} \${fpath})" >> "${ZGEN_INIT}"
 
-    echo "zgen: Creating ${ZGEN_DIR}/zcompdump"
-    compinit -d "${ZGEN_DIR}/zcompdump"
+    zgen-apply --verbose
+}
+
+zgen-apply() {
+  fpath=(${(q)ZGEN_COMPLETIONS[@]} ${fpath})
+  [[ "$1" == --verbose ]] && echo "zgen: Creating ${ZGEN_DIR}/zcompdump"
+  compinit -d "${ZGEN_DIR}/zcompdump"
 }
 
 zgen-completions() {
@@ -152,16 +172,25 @@ zgen-completions() {
     zgen-load "${@}"
 }
 
-zgen-load() {
-    local repo="${1}"
-    local file="${2}"
-    local branch="${3:-master}"
-    local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
-    local location="${dir}/${file}"
+-zgen-path-contains() {
+  setopt localoptions nonomatch nocshnullglob nonullglob; [ -f "$1"/*"$2"(.[1]) ]
+}
 
-    # clone repo if not present
-    if [[ ! -d "${dir}" ]]; then
-        zgen-clone "${repo}" "${branch}"
+zgen-load() {
+    if [[ "$#" == 1 && ("${1[1]}" == '/' || "${1[1]}" == '.' ) ]]; then
+      local location="${1}"
+    else
+      local repo="${1}"
+      local file="${2}"
+      local branch="${3:-master}"
+      local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
+      local location="${dir}/${file}"
+      location=${location%/}
+
+      # clone repo if not present
+      if [[ ! -d "${dir}" ]]; then
+          zgen-clone "${repo}" "${branch}"
+      fi
     fi
 
     # source the file
@@ -185,13 +214,13 @@ zgen-load() {
         -zgen-source "${location}.zsh.plugin"
 
     # Classic oh-my-zsh plugins have foo.plugin.zsh
-    elif ls "${location}" | grep -l "\.plugin\.zsh" &> /dev/null; then
+    elif -zgen-path-contains "${location}" ".plugin.zsh" ; then
         for script (${location}/*\.plugin\.zsh(N)) -zgen-source "${script}"
 
-    elif ls "${location}" | grep -l "\.zsh" &> /dev/null; then
+    elif -zgen-path-contains "${location}" ".zsh" ; then
         for script (${location}/*\.zsh(N)) -zgen-source "${script}"
 
-    elif ls "${location}" | grep -l "\.sh" &> /dev/null; then
+    elif -zgen-path-contains "${location}" ".sh" ; then
         for script (${location}/*\.sh(N)) -zgen-source "${script}"
 
     # Completions
@@ -199,7 +228,7 @@ zgen-load() {
         -zgen-add-to-fpath "${location}"
 
     else
-        echo "zgen: Failed to load ${dir}"
+        echo "zgen: Failed to load ${dir:-$location}"
     fi
 }
 
@@ -242,7 +271,7 @@ zgen-selfupdate() {
 }
 
 zgen-oh-my-zsh() {
-    local repo="robbyrussell/oh-my-zsh"
+    local repo="$ZGEN_OH_MY_ZSH_REPO"
     local file="${1:-oh-my-zsh.sh}"
 
     zgen-load "${repo}" "${file}"
@@ -264,7 +293,7 @@ zgen() {
     fi
 }
 
-ZSH="$(-zgen-get-clone-dir robbyrussell/oh-my-zsh master)"
+ZSH="$(-zgen-get-clone-dir "$ZGEN_OH_MY_ZSH_REPO" "$ZGEN_OH_MY_ZSH_BRANCH")"
 zgen-init
 fpath=($ZGEN_SOURCE $fpath)
 
