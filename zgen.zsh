@@ -46,7 +46,7 @@ fi
     local repo="${1}"
     local branch="${2:-master}"
 
-    if [[ -d "${repo}/.git" ]]; then
+    if [[ -e "${repo}/.git" ]]; then
         echo "${ZGEN_DIR}/local/$(basename ${repo})-${branch}"
     else
         # Repo directory will be location/reponame
@@ -62,7 +62,7 @@ fi
 -zgen-get-clone-url() {
     local repo="${1}"
 
-    if [[ -d "${repo}/.git" ]]; then
+    if [[ -e "${repo}/.git" ]]; then
         echo "${repo}"
     else
         # Sourced from antigen url resolution logic.
