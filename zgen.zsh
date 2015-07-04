@@ -174,7 +174,7 @@ zgen-completions() {
 
 -zgen-path-contains() {
   setopt localoptions nonomatch nocshnullglob nonullglob;
-  [ -h "$1"/*"$2"(.,@[1]) ]
+  [ -e "$1"/*"$2"(.,@[1]) ]
 }
 
 zgen-load() {
