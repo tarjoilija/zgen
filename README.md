@@ -1,8 +1,6 @@
 ## zgen
 
-A lightweight plugin manager for ZSH inspired by Antigen. Our goal is to have a minimal overhead when starting up the shell because nobody likes waiting. The script generates a static init.zsh file which does nothing but sources your plugins and appends them to fpath. The downside is that you have to update your plugins manually.
-
-My current zgen setup takes 208ms to load where Antigen takes 1324ms with the same plugins.
+A lightweight plugin manager for ZSH inspired by Antigen. The goal is to have a minimal overhead when starting up the shell because nobody likes waiting. The script generates a static init.zsh file which does nothing but sources your plugins and appends them to fpath. The downside is that you have to update the init script manually with `zgen reset` whenever you update your `.zshrc`.
 
 ### Usage
 
@@ -28,6 +26,10 @@ Similar to `antigen bundle`. It tries to source any scripts from `location`. If 
 #### Save all loaded scripts into an init script
     zgen save
 We do this so they'll get run each time you source zgen.
+
+#### Remove the init script
+    zgen reset
+You must do this every time you tweak your `.zshrc` so that the new plugins can be saved to an init script.
 
 #### Check for an init script
     zgen saved
