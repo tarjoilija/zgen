@@ -173,7 +173,8 @@ zgen-completions() {
 }
 
 -zgen-path-contains() {
-  setopt localoptions nonomatch nocshnullglob nonullglob; [ -f "$1"/*"$2"(.[1]) ]
+  setopt localoptions nonomatch nocshnullglob nonullglob;
+  [ -h "$1"/*"$2"(.,@[1]) ]
 }
 
 zgen-load() {
