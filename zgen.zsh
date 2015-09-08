@@ -314,5 +314,8 @@ ZSH="$(-zgen-get-clone-dir "$ZGEN_OH_MY_ZSH_REPO" "$ZGEN_OH_MY_ZSH_BRANCH")"
 zgen-init
 fpath=($ZGEN_SOURCE $fpath)
 
-autoload -U compinit
-compinit -d "${ZGEN_DIR}/zcompdump"
+ZGEN_AUTOLOAD_COMPINIT=${ZGEN_AUTOLOAD_COMPINIT:-true}
+if $ZGEN_AUTOLOAD_COMPINIT; then
+    autoload -U compinit
+    compinit -d "${ZGEN_DIR}/zcompdump"
+fi
