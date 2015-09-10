@@ -36,7 +36,7 @@ fi
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
     autoload -U regexp-replace
-    url=$1
+    local url="${1}"
     regexp-replace url '/' '-SLASH-'
     regexp-replace url ':' '-COLON-'
     regexp-replace url '\|' '-PIPE-'
