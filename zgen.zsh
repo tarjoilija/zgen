@@ -289,7 +289,10 @@ zgen-completions() {
 }
 
 zgen-load() {
-    if [[ "$#" == 1 && ("${1[1]}" == '/' || "${1[1]}" == '.' ) ]]; then
+	if [[ "$#" == 0 ]]; then
+		echo "zgen: 'load' requires at least one parameter"
+		echo "usage: zgen load <repo> [location] [branch]"
+    elif [[ "$#" == 1 && ("${1[1]}" == '/' || "${1[1]}" == '.' ) ]]; then
       local location="${1}"
     else
       local repo="${1}"
