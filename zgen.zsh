@@ -459,6 +459,7 @@ zgen() {
     fi
 }
 
+ZSH=$(-zgen-get-zsh)
 zgen-init
 fpath=($ZGEN_SOURCE $fpath)
 
