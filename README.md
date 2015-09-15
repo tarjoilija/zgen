@@ -11,6 +11,22 @@ A lightweight plugin manager for ZSH inspired by Antigen. The goal is to have a 
     zgen oh-my-zsh <location>
 This is a shortcut for `zgen load`.
 
+#### Or if you prefer prezto
+    zgen prezto
+This will also create a symlink in the ZSHDOT or HOME directory. This is needed by prezto
+
+#### Load prezto plugins
+    zgen prezto <modulename>
+This is uses the prezto method for loading modules
+
+#### Load a repo as prezto plugins
+    zgen pmodule <reponame> <branch>
+This is uses the prezto method for loading the module, by creating a symlink and calling pmodule
+
+#### Set prezto options
+    zgen prezto <modulename> <option> <value(s)>
+This must be used before the module is loaded. Or if the default modules should be loaded (default) these settings must be done before the `zgen prezto` command. `module` is prepended if the name does not start with `module`, `prezto` or a `*`, `prezto` is prepended if it does not start with `prezto`.
+
 #### Load plugins and completions
     zgen load <repo> [location] [branch]
 Similar to `antigen bundle`. It tries to source any scripts from `location`. If none found, it adds `location` to `$fpath`.
@@ -80,6 +96,29 @@ EOPLUGINS
     # save all to init script
     zgen save
 fi
+```
+
+### Example .zshrc for prezto use
+Here is a partial example how to work with prezto
+
+```zsh
+...
+    echo "Creating a zgen save"
+
+    # prezto options
+	zgen prezto editor key-bindings 'emacs'
+	zgen prezto prompt theme 'sorin'
+
+    # prezto and modules
+    zgen prezto
+    zgen prezto git
+    zgen prezto command-not-found
+    zgen prezto syntax-highlighting
+
+    # plugins
+    zgen load /path/to/super-secret-private-plugin
+....
+
 ```
 
 ## Other resources
