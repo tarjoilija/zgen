@@ -29,11 +29,11 @@ if [[ -z "${ZGEN_COMPLETIONS}" ]]; then
 fi
 
 if [[ -z "${ZGEN_USE_PREZTO}" ]]; then
-	ZGEN_USE_PREZTO=0
+    ZGEN_USE_PREZTO=0
 fi
 
 if [[ -z "${ZGEN_PREZTO_LOAD_DEFAULT}" ]]; then
-	ZGEN_PREZTO_LOAD_DEFAULT=1
+    ZGEN_PREZTO_LOAD_DEFAULT=1
 fi
 
 if [[ -z "${ZGEN_OH_MY_ZSH_REPO}" ]]; then
@@ -171,11 +171,11 @@ zgen-clone() {
 }
 
 -zgen-prezto-load(){
-	local params="$*"
-	local cmd="pmodload ${params[@]}"
+    local params="$*"
+    local cmd="pmodload ${params[@]}"
 
-	# execute in place
-	eval $cmd
+    # execute in place
+    eval $cmd
 
     if [[ ! "${ZGEN_PREZTO[@]}" =~ "${cmd}" ]]; then
         ZGEN_PREZTO_LOAD+=("${params[@]}")
@@ -254,11 +254,11 @@ zgen-save() {
     if [[ ${ZGEN_USE_PREZTO} == 1 ]]; then
         echo >> "${ZGEN_INIT}"
         echo "# init prezto" >> "${ZGEN_INIT}"
-		echo -n "pmodload " >> "${ZGEN_INIT}"
+        echo -n "pmodload " >> "${ZGEN_INIT}"
         for module in "${ZGEN_PREZTO_LOAD[@]}"; do
             echo -n "${module} " >> "${ZGEN_INIT}"
         done
-		echo >> "${ZGEN_INIT}"
+        echo >> "${ZGEN_INIT}"
     fi
 
     zgen-apply --verbose
@@ -282,17 +282,17 @@ zgen-completions() {
 }
 
 -zgen-get-zsh(){
-	if [[ ${ZGEN_USE_PREZTO} == 1 ]]; then
-		echo "$(-zgen-get-clone-dir "$ZGEN_PREZTO_REPO" "$ZGEN_PREZTO_BRANCH")"
-	else
-		echo "$(-zgen-get-clone-dir "$ZGEN_OH_MY_ZSH_REPO" "$ZGEN_OH_MY_ZSH_BRANCH")"
-	fi
+    if [[ ${ZGEN_USE_PREZTO} == 1 ]]; then
+        echo "$(-zgen-get-clone-dir "$ZGEN_PREZTO_REPO" "$ZGEN_PREZTO_BRANCH")"
+    else
+        echo "$(-zgen-get-clone-dir "$ZGEN_OH_MY_ZSH_REPO" "$ZGEN_OH_MY_ZSH_BRANCH")"
+    fi
 }
 
 zgen-load() {
-	if [[ "$#" == 0 ]]; then
-		echo "zgen: 'load' requires at least one parameter"
-		echo "usage: zgen load <repo> [location] [branch]"
+    if [[ "$#" == 0 ]]; then
+        echo "zgen: 'load' requires at least one parameter"
+        echo "usage: zgen load <repo> [location] [branch]"
     elif [[ "$#" == 1 && ("${1[1]}" == '/' || "${1[1]}" == '.' ) ]]; then
       local location="${1}"
     else
@@ -397,32 +397,32 @@ zgen-prezto() {
     local repo="$ZGEN_PREZTO_REPO"
     local file="${1:-init.zsh}"
 
-	# load prezto itself
-	if [[ $# == 0 ]]; then
-		ZGEN_USE_PREZTO=1
-		zgen-load "${repo}" "${file}"
-		if [[ ! -h ${ZDOTDIR:-$HOME}/.zprezto ]]; then
-			local dir="$(-zgen-get-clone-dir ${repo} ${ZGEN_PREZTO_BRANCH})"
-			ln -s "${dir}" "${ZDOTDIR:-$HOME}/.zprezto"
-		fi
-		if [[ ${ZGEN_PREZTO_LOAD_DEFAULT} != 0 ]]; then
-			-zgen-prezto-load "'environment' 'terminal' 'editor' 'history' 'directory' 'spectrum' 'utility' 'completion' 'prompt'"
-		fi
+    # load prezto itself
+    if [[ $# == 0 ]]; then
+        ZGEN_USE_PREZTO=1
+        zgen-load "${repo}" "${file}"
+        if [[ ! -h ${ZDOTDIR:-$HOME}/.zprezto ]]; then
+            local dir="$(-zgen-get-clone-dir ${repo} ${ZGEN_PREZTO_BRANCH})"
+            ln -s "${dir}" "${ZDOTDIR:-$HOME}/.zprezto"
+        fi
+        if [[ ${ZGEN_PREZTO_LOAD_DEFAULT} != 0 ]]; then
+            -zgen-prezto-load "'environment' 'terminal' 'editor' 'history' 'directory' 'spectrum' 'utility' 'completion' 'prompt'"
+        fi
 
-	# this is a prezto module
-	elif [[ $# == 1 ]]; then
-		local module=${file}
-		if [[ -z ${file} ]]; then
-			echo "Please specify which module to load using 'zgen prezto <name of module>'"
-			return 1
-		fi
-		-zgen-prezto-load "'$module'"
+    # this is a prezto module
+    elif [[ $# == 1 ]]; then
+        local module=${file}
+        if [[ -z ${file} ]]; then
+            echo "Please specify which module to load using 'zgen prezto <name of module>'"
+            return 1
+        fi
+        -zgen-prezto-load "'$module'"
 
-	# this is a prezto option
-	else
-		shift
+    # this is a prezto option
+    else
+        shift
         -zgen-prezto-option ${file} ${(q)@}
-	fi
+    fi
 
 }
 
