@@ -150,7 +150,8 @@ zgen-clone() {
     shift
     local option=${1}
     shift
-    local params=$@
+    local params
+    params=${@}
     if [[ ${module} =~ "^:" ]]; then
         module=${module[1,]}
     fi
@@ -160,7 +161,7 @@ zgen-clone() {
     if [[ ! $module =~ "^(prezto):" ]]; then
         module="prezto:$module"
     fi
-    local cmd="zstyle ':${module}' $option ${(qq)params}"
+    local cmd="zstyle ':${module}' $option ${params}"
 
     # execute in place
     eval $cmd
@@ -421,7 +422,7 @@ zgen-prezto() {
     # this is a prezto option
     else
         shift
-        -zgen-prezto-option ${file} ${(q)@}
+        -zgen-prezto-option ${file} ${(qq)@}
     fi
 
 }
