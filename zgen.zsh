@@ -1,6 +1,4 @@
 #!/bin/zsh
-autoload -U regexp-replace
-
 local ZGEN_SOURCE="$(cd "$(dirname "${0}")" && pwd -P)"
 
 -zgputs() { printf %s\\n "$@" ;}
@@ -15,6 +13,10 @@ fi
 
 if [[ -z "${ZGEN_INIT}" ]]; then
     ZGEN_INIT="${ZGEN_DIR}/init.zsh"
+fi
+
+if [[-z "${ZGEN_AUTOLOAD_COMPINIT}" ]]; then
+    ZGEN_AUTOLOAD_COMPINIT=1
 fi
 
 if [[ -z "${ZGEN_LOADED}" ]]; then
@@ -65,10 +67,10 @@ if [[ -z "${ZGEN_PREZTO_BRANCH}" ]]; then
     ZGEN_PREZTO_BRANCH=master
 fi
 
+autoload -U regexp-replace
 -zgen-encode-url () {
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
-    autoload -U regexp-replace
     local url="${1}"
     regexp-replace url '/' '-SLASH-'
     regexp-replace url ':' '-COLON-'
@@ -138,16 +140,14 @@ zgen-clone() {
 -zgen-source() {
     local file="${1}"
 
-    source "${file}"
-
-    # Add to ZGEN_LOADED array if not present
     if [[ ! "${ZGEN_LOADED[@]}" =~ "${file}" ]]; then
         ZGEN_LOADED+=("${file}")
+        source "${file}"
+
+        completion_path="$(dirname ${file})"
+
+        -zgen-add-to-fpath "${completion_path}"
     fi
-
-    completion_path="$(dirname ${file})"
-
-    -zgen-add-to-fpath "${completion_path}"
 }
 
 -zgen-prezto-option(){
@@ -393,7 +393,8 @@ zgen-list() {
 zgen-selfupdate() {
     if [[ -e "${ZGEN_SOURCE}/.git" ]]; then
         (cd "${ZGEN_SOURCE}" \
-            && git pull)
+            && git pull) \
+            && zgen reset
     else
         -zgpute "Not running from a git repository; cannot automatically update."
         return 1
@@ -481,8 +482,7 @@ ZSH=$(-zgen-get-zsh)
 zgen-init
 fpath=($ZGEN_SOURCE $fpath)
 
-ZGEN_AUTOLOAD_COMPINIT=${ZGEN_AUTOLOAD_COMPINIT:-true}
-if $ZGEN_AUTOLOAD_COMPINIT; then
+if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
     autoload -U compinit
     compinit -d "${ZGEN_DIR}/zcompdump"
 fi
