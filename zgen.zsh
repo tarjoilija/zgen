@@ -239,19 +239,27 @@ zgen-save() {
     -zginit 'fpath=('"${(@q)ZGEN_COMPLETIONS}"' ${fpath})'
 
     # Check for file changes
-    if [[ ! -z ${ZGEN_RESET_ON_CHANGE} ]]; then
-       -zginit ""
-       -zginit "# ### Recompilation triggers"
-       for file in ${ZGEN_RESET_ON_CHANGE}; do
-          CHANGESHA=`shasum -a 256 ${file}`
-          -zginit "if [[ \"\`shasum -a 256 ${file}\`\" != \"$CHANGESHA\" ]]; then"
-          -zginit '   printf %s\\n Changed file `'"${file}"'`, resetting zgen ...'
-          -zginit "   zgen reset"
-          printf %s "el" >> "${ZGEN_INIT}"
-       done
-       -zginit "se "
-       -zginit "   ;"
-       -zginit "fi"
+    if [[ ! -z "${ZGEN_RESET_ON_CHANGE}" ]]; then
+        -zginit ""
+        -zginit "# ### Recompilation triggers"
+
+        local ages="$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \
+                      stat -Lf "%m" 2>/dev/null $ZGEN_RESET_ON_CHANGE)"
+        local shas="$(shasum -a 256 ${ZGEN_RESET_ON_CHANGE})"
+
+        -zginit "read -rd '' ages <<AGES; read -rd '' shas <<SHAS"
+        -zginit "$ages"
+        -zginit "AGES"
+        -zginit "$shas"
+        -zginit "SHAS"
+
+        -zginit 'if [[ -n "$ZGEN_RESET_ON_CHANGE" \'
+        -zginit '   && "$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \'
+        -zginit '         stat -Lf "%m"             $ZGEN_RESET_ON_CHANGE)" != "$ages" \'
+        -zginit '   && "$(shasum -a 256             $ZGEN_RESET_ON_CHANGE)" != "$shas" ]]; then'
+        -zginit '   printf %s\\n '\''-- zgen: Files in $ZGEN_RESET_ON_CHANGE changed; resetting `init.zsh`...'\'
+        -zginit '   zgen reset'
+        -zginit 'fi'
     fi
 
     # load prezto modules
