@@ -15,8 +15,16 @@ if [[ -z "${ZGEN_INIT}" ]]; then
     ZGEN_INIT="${ZGEN_DIR}/init.zsh"
 fi
 
-if [[-z "${ZGEN_AUTOLOAD_COMPINIT}" ]]; then
+# The user can explicitly disable Zgen attempting to invoke `compinit`, or it
+# will be automatically disabled if `compinit` appears to have already been
+# invoked.
+if [[ -z "${ZGEN_AUTOLOAD_COMPINIT}" && -z "${(t)_comps}" ]]; then
     ZGEN_AUTOLOAD_COMPINIT=1
+fi
+
+if [[ -n "${ZGEN_CUSTOM_COMPDUMP}" ]]; then
+    ZGEN_COMPINIT_DIR_FLAG="-d ${(q-)ZGEN_CUSTOM_COMPDUMP}"
+    ZGEN_COMPINIT_FLAGS="${ZGEN_COMPINIT_DIR_FLAG} ${ZGEN_COMPINIT_FLAGS}"
 fi
 
 if [[ -z "${ZGEN_LOADED}" ]]; then
@@ -233,10 +241,17 @@ zgen-save() {
         -zginit 'source "'"${(q)file}"\"
     done
 
-    # Set up fpath
+    # Set up fpath, load completions
+    # NOTE: This *intentionally* doesn't use ${ZGEN_COMPINIT_FLAGS}; the only
+    #       available flags are meaningless in the presence of `-C`.
     -zginit ""
     -zginit "# ### Plugins & Completions"
     -zginit 'fpath=('"${(@q)ZGEN_COMPLETIONS}"' ${fpath})'
+    if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
+        -zginit ""
+        -zginit 'autoload -Uz compinit && \'
+        -zginit '   compinit -C '"${ZGEN_COMPINIT_DIR_FLAG}"
+    fi
 
     # Check for file changes
     if [[ ! -z "${ZGEN_RESET_ON_CHANGE}" ]]; then
@@ -275,13 +290,18 @@ zgen-save() {
     -zginit ""
     -zginit "# }}}"
 
-    zgen-apply --verbose
+    zgen-apply
 }
 
 zgen-apply() {
   fpath=(${(q-)ZGEN_COMPLETIONS[@]} ${fpath})
-  [[ "$1" == --verbose ]] && echo "zgen: Creating ${ZGEN_DIR}/zcompdump"
-  compinit -d "${ZGEN_DIR}/zcompdump"
+
+  if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
+    -zgpute "Initializing completions ..."
+
+    autoload -Uz compinit && \
+      compinit $ZGEN_COMPINIT_FLAGS
+  fi
 }
 
 zgen-completions() {
@@ -481,8 +501,3 @@ zgen() {
 ZSH=$(-zgen-get-zsh)
 zgen-init
 fpath=($ZGEN_SOURCE $fpath)
-
-if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
-    autoload -U compinit
-    compinit -d "${ZGEN_DIR}/zcompdump"
-fi
