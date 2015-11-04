@@ -20,6 +20,7 @@ _zgen_commands=(
     "list:print init.zsh"
     "load:clone and load plugin"
     "oh-my-zsh:load oh-my-zsh base"
+    "prezto:load prezto base"
     "reset:delete the init.zsh script"
     "save:check for init.zsh script"
     "selfupdate:update zgen framework from repository"
