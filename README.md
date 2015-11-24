@@ -106,8 +106,8 @@ Here is a partial example how to work with prezto
     echo "Creating a zgen save"
 
     # prezto options
-	zgen prezto editor key-bindings 'emacs'
-	zgen prezto prompt theme 'sorin'
+    zgen prezto editor key-bindings 'emacs'
+    zgen prezto prompt theme 'sorin'
 
     # prezto and modules
     zgen prezto
