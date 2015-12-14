@@ -345,7 +345,11 @@ zgen-load() {
         -zgen-add-to-fpath "${location}"
 
     else
+      if [[ -d ${dir:-$location} ]]; then
+        echo "zgen: Failed to load ${dir:-$location} -- ${file}"
+      else
         echo "zgen: Failed to load ${dir:-$location}"
+      fi
     fi
 }
 
