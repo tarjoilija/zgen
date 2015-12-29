@@ -1,5 +1,4 @@
 #!/bin/zsh
-autoload -U regexp-replace
 
 local ZGEN_SOURCE="$(cd "$(dirname "${0}")" && pwd -P)"
 
@@ -63,11 +62,10 @@ fi
 -zgen-encode-url () {
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
-    autoload -U regexp-replace
     local url="${1}"
-    regexp-replace url '/' '-SLASH-'
-    regexp-replace url ':' '-COLON-'
-    regexp-replace url '\|' '-PIPE-'
+    url=${url//\//-SLASH-}
+    url=${url//\:/-COLON-}
+    url=${url//\|/-PIPE-}
     echo $url
 }
 
