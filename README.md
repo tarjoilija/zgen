@@ -58,8 +58,11 @@ Returns 0 if an init script exists.
     zgen update
 
 #### Automatically check for filechanges and regenerate zinit
-You can set the environment variable ZGEN_RESET_ON_CHANGE. These files will be checked and if a change is detected zgen reset is called.
-    ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
+You can set the environment variable `ZGEN_RESET_ON_CHANGE`. These files will be checked and if a change is detected zgen reset is called.
+
+```zsh
+ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
+```
 
 ### Example .zshrc
 
