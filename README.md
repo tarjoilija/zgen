@@ -106,8 +106,8 @@ Here is a partial example how to work with prezto
     echo "Creating a zgen save"
 
     # prezto options
-	zgen prezto editor key-bindings 'emacs'
-	zgen prezto prompt theme 'sorin'
+    zgen prezto editor key-bindings 'emacs'
+    zgen prezto prompt theme 'sorin'
 
     # prezto and modules
     zgen prezto
@@ -124,3 +124,5 @@ Here is a partial example how to work with prezto
 ## Other resources
 
 The [awesome-zsh-plugins](https://github.com/unixorn/awesome-zsh-plugins) list contains many zgen-compatible zsh plugins & themes that you may find useful.
+
+There's a quickstart kit for using zsh and zgen at [zsh-quickstart-kit](https://github.com/unixorn/zsh-quickstart-kit) that guides you through setting up zgen and includes a sampler of useful plugins.
