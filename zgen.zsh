@@ -76,14 +76,13 @@ if [[ -z "${ZGEN_PREZTO_BRANCH}" ]]; then
     ZGEN_PREZTO_BRANCH=master
 fi
 
-autoload -U regexp-replace
 -zgen-encode-url () {
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
     local url="${1}"
-    regexp-replace url '/' '-SLASH-'
-    regexp-replace url ':' '-COLON-'
-    regexp-replace url '\|' '-PIPE-'
+    url=${url//\//-SLASH-}
+    url=${url//\:/-COLON-}
+    url=${url//\|/-PIPE-}
     -zgputs "$url"
 }
 
