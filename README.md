@@ -53,7 +53,14 @@ This must be used before the module is loaded. Or if the default modules should 
 Similar to `antigen bundle`. It tries to source any scripts from `location`. If none found, it adds `location` to `$fpath`.
 
 - `repo`
-    - github 'user/repository' or path to a local repository
+    - github 'user/repository' or path to a repository
+    - currently supported formats for a path:
+        - any local repository
+        - `git://*`
+        - `https://*`
+        - `http://*`
+        - `ssh://*`
+        - `git@github.com:*/*`
 - `location`
     - relative path to a script/folder
     - useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`
