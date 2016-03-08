@@ -2,6 +2,27 @@
 
 A lightweight plugin manager for ZSH inspired by Antigen. The goal is to have a minimal overhead when starting up the shell because nobody likes waiting. The script generates a static init.zsh file which does nothing but sources your plugins and appends them to fpath. The downside is that you have to refresh the init script manually with `zgen reset` whenever you update your `.zshrc`.
 
+## Installation
+Get the code
+
+    cd ~
+    git clone https://github.com/tarjoilija/zgen.git .zgen
+
+Edit your .zshrc file to load zgen:
+
+    # load zgen
+    source "${HOME}/.zgen/zgen.zsh"
+
+Place the following code after the one above to load oh-my-zsh for example, see Usage for more details.
+
+    # check if there's no init script
+    if ! zgen saved; then
+      # load oh my zsh
+      zgen oh-my-zsh
+      zgen save
+    fi
+
+
 ### Usage
 
 #### Load oh-my-zsh base
