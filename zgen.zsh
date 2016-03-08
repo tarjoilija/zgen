@@ -240,8 +240,10 @@ zgen-save() {
        echo >> "${ZGEN_INIT}"
        echo "# check for file changes" >> "${ZGEN_INIT}"
        for file in ${ZGEN_RESET_ON_CHANGE}; do
-          CHANGESHA=`shasum -a 256 ${file}`
-          echo "if [[ \"\`shasum -a 256 ${file}\`\" != \"$CHANGESHA\" ]]; then" >> "${ZGEN_INIT}"
+          REALFILE=`FILE=${file};while [[ -L ${FILE} ]];do FILE=$(readlink $FILE); done; echo $FILE`
+          `stat --version` && stat_cmd="stat -c '%Y %W'" || stat_cmd="stat -f '%m %B'"
+          CHANGESHA=`$stat_cmd ${REALFILE}`
+          echo "if [[ \"\`$stat_cmd ${REALFILE}\`\" != \"$CHANGESHA\" ]]; then" >> "${ZGEN_INIT}"
           echo "   echo Changed file ${file}, resetting zgen" >> "${ZGEN_INIT}"
           echo "   zgen reset" >> "${ZGEN_INIT}"
           echo -n "el" >> "${ZGEN_INIT}"
