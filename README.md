@@ -86,8 +86,11 @@ Returns 0 if an init script exists.
     zgen update
 
 #### Automatically check for filechanges and regenerate zinit
-You can set the environment variable ZGEN_RESET_ON_CHANGE. These files will be checked and if a change is detected zgen reset is called.
-    ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
+You can set the environment variable `ZGEN_RESET_ON_CHANGE`. These files will be checked and if a change is detected zgen reset is called.
+
+```zsh
+ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
+```
 
 ### Notes
 Be aware that `zgen` tries to handle [`compinit`][compinit] for you to allow for the fastest possible initialization times. However, this functionality will be disabled if you've already called `compinit` yourself before sourcing `zgen.zsh`. (Alternatively, you can disable it yourself by disabling `$ZGEN_AUTOLOAD_COMPINIT`.)
