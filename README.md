@@ -60,7 +60,7 @@ Similar to `antigen bundle`. It tries to source any scripts from `location`. If 
         - `https://*`
         - `http://*`
         - `ssh://*`
-        - `git@github.com:*/*`
+        - `git@*:*/*`
 - `location`
     - relative path to a script/folder
     - useful for repositories that don't have proper plugin support like `zsh-users/zsh-completions`

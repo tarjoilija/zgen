@@ -116,7 +116,7 @@ fi
               $repo != https://* &&
               $repo != http://* &&
               $repo != ssh://* &&
-              $repo != git@github.com:*/*
+              $repo != git@*:*/*
               ]]; then
             repo="https://github.com/${repo%.git}.git"
         fi
