@@ -1,0 +1,6 @@
+*
+!.gitignore
+!LICENSE
+!README.md
+!_zgen
+!zgen.zsh
