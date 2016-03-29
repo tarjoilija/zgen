@@ -304,12 +304,6 @@ zgen-apply() {
     fi
 }
 
-zgen-completions() {
-    -zgpute '`zgen completions` is deprecated, please use `zgen load` instead'
-
-    zgen-load "${@}"
-}
-
 -zgen-path-contains() {
     setopt localoptions nonomatch nocshnullglob nonullglob;
     [ -e "$1"/*"$2"(.,@[1]) ]
