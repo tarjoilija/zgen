@@ -1,8 +1,10 @@
 ## zgen
 
-A lightweight plugin manager for ZSH inspired by Antigen. Manage your plugins at ease with simple function calls in `.zshrc`.
+A lightweight plugin manager for Zsh inspired by [Antigen](https://github.com/zsh-users/antigen). Keep your `.zshrc` clean and simple.
 
-Zgen generates a static init script based on your input. This means that you have to manually check for updates (`zgen update`) and reset the init script (`zgen reset`) whenever you add or remove plugins. There is little to none automation by default.
+Zgen provides you few simple commands for managing plugins. It installs your plugins and generates a static init script that will source them for you every time you run the shell. We do this to save some startup time by not having to execute time consuming logic (plugin checking, updates, etc). This means that you have to manually check for updates (`zgen update`) and reset the init script (`zgen reset`) whenever you add or remove plugins.
+
+The motive for creating zgen was to have plugins quickly installed on a new machine without getting the startup lag that Antigen used to give me.
 
 ## Installation
 Clone the zgen repository
