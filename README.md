@@ -9,7 +9,7 @@ The motive for creating zgen was to have plugins quickly installed on a new mach
 ## Installation
 Clone the zgen repository
 
-    cd ~
+    cd ${ZDOTDIR:-$HOME}
     git clone https://github.com/tarjoilija/zgen.git .zgen
 
 Edit your .zshrc file to load zgen
