@@ -9,13 +9,13 @@ The motive for creating zgen was to have plugins quickly installed on a new mach
 ## Installation
 Clone the zgen repository
 
-    cd ~
+    cd ${ZDOTDIR:-$HOME}
     git clone https://github.com/tarjoilija/zgen.git .zgen
 
 Edit your .zshrc file to load zgen
 
     # load zgen
-    source "${HOME}/.zgen/zgen.zsh"
+    source "${ZDOTDIR:-$HOME}/.zgen/zgen.zsh"
 
 Place the following code after the one above to load oh-my-zsh for example, see Usage for more details
 
@@ -133,7 +133,7 @@ Pulls updates on every plugin repository and removes the init script.
 You can automate the process of running `zgen reset` by specifying a list of files to `ZGEN_RESET_ON_CHANGE`. These files will be checked and if a change is detected zgen reset is called.
 
 ```zsh
-ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
+ZGEN_RESET_ON_CHANGE=(${ZDOTDIR:-$HOME}/.zshrc ${ZDOTDIR:-$HOME}/.zshrc.local)
 ```
 
 ## Notes
@@ -145,7 +145,7 @@ Be aware that `zgen` tries to handle [`compinit`][compinit] for you to allow for
 
 ```zsh
 # load zgen
-source "${HOME}/.zgen/zgen.zsh"
+source "${ZDOTDIR:-$HOME}/.zgen/zgen.zsh"
 
 # if the init scipt doesn't exist
 if ! zgen saved; then
