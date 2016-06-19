@@ -1,6 +1,6 @@
 #!/bin/zsh
 # vim: set ft=zsh fenc=utf-8 noai ts=8 et sts=4 sw=0 tw=80 nowrap :
-local ZGEN_SOURCE="$(cd "$(dirname "${0}")" && pwd -P)"
+local ZGEN_SOURCE="$0:A:h"
 
 -zgputs() { printf %s\\n "$@" ;}
 -zgpute() { printf %s\\n "-- zgen: $*" >&2 ;}
