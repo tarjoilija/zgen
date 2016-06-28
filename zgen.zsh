@@ -207,6 +207,10 @@ zgen-reset() {
     if [[ -f "${ZGEN_INIT}" ]]; then
         rm "${ZGEN_INIT}"
     fi
+    if [[ -f "${ZGEN_CUSTOM_COMPDUMP}" ]] || [[ -d "${ZGEN_CUSTOM_COMPDUMP}" ]]; then
+        -zgpute 'Deleting `'"${ZGEN_CUSTOM_COMPDUMP}"'` ...'
+        rm -r "${ZGEN_CUSTOM_COMPDUMP}"
+    fi
 }
 
 zgen-update() {
@@ -501,5 +505,5 @@ zgen() {
 }
 
 ZSH=$(-zgen-get-zsh)
-zgen-init
 fpath=($ZGEN_SOURCE $fpath)
+zgen-init
