@@ -139,7 +139,7 @@ ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
 ## Notes
 Be aware that `zgen` tries to handle [`compinit`][compinit] for you to allow for the fastest possible initialization times. However, this functionality will be disabled if you've already called `compinit` yourself before sourcing `zgen.zsh`. Alternatively, you can disable it yourself by disabling `$ZGEN_AUTOLOAD_COMPINIT`.
 
-    [compinit]: <http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Use-of-compinit> "Zsh manual 20.2.1: Use of compinit"
+  [compinit]: <http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Use-of-compinit> "Zsh manual 20.2.1: Use of compinit"
 
 ## Example .zshrc
 
