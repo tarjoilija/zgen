@@ -24,7 +24,7 @@ if [[ -z "${ZGEN_AUTOLOAD_COMPINIT}" && -z "${(t)_comps}" ]]; then
 fi
 
 if [[ -n "${ZGEN_CUSTOM_COMPDUMP}" ]]; then
-    ZGEN_COMPINIT_DIR_FLAG="-d ${(q-)ZGEN_CUSTOM_COMPDUMP}"
+    ZGEN_COMPINIT_DIR_FLAG="-d ${(q)ZGEN_CUSTOM_COMPDUMP}"
     ZGEN_COMPINIT_FLAGS="${ZGEN_COMPINIT_DIR_FLAG} ${ZGEN_COMPINIT_FLAGS}"
 fi
 
@@ -298,7 +298,7 @@ zgen-save() {
 }
 
 zgen-apply() {
-    fpath=(${(q-)ZGEN_COMPLETIONS[@]} ${fpath})
+    fpath=(${(q)ZGEN_COMPLETIONS[@]} ${fpath})
 
     if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
         -zgpute "Initializing completions ..."
