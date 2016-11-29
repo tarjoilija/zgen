@@ -264,7 +264,7 @@ zgen-save() {
 
         local ages="$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \
                       stat -Lf "%m" 2>/dev/null $ZGEN_RESET_ON_CHANGE)"
-        local shas="$(shasum -a 256 ${ZGEN_RESET_ON_CHANGE})"
+        local shas="$(sha256sum ${ZGEN_RESET_ON_CHANGE})"
 
         -zginit "read -rd '' ages <<AGES; read -rd '' shas <<SHAS"
         -zginit "$ages"
