@@ -267,7 +267,7 @@ zgen-save() {
     #       available flags are meaningless in the presence of `-C`.
     -zginit ""
     -zginit "# ### Plugins & Completions"
-    -zginit 'fpath=('"${(@q)ZGEN_COMPLETIONS}"' ${fpath})'
+    -zginit 'fpath=('"${(@qOa)ZGEN_COMPLETIONS}"' ${fpath})'
     if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
         -zginit ""
         -zginit 'autoload -Uz compinit && \'
