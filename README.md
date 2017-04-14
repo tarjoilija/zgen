@@ -18,7 +18,7 @@ Edit your .zshrc file to load zgen
 
 Place the following code after the one above to load oh-my-zsh for example, see Usage for more details
 
-    # if the init scipt doesn't exist
+    # if the init script doesn't exist
     if ! zgen saved; then
     
       # specify plugins here
