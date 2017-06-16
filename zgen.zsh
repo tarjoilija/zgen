@@ -214,7 +214,7 @@ zgen-reset() {
 }
 
 zgen-update() {
-    for repo in "${ZGEN_DIR}"/*/*; do
+    for repo in "${ZGEN_DIR}"/(^.git)/*; do
         -zgpute "Updating '${repo}' ..."
         (cd "${repo}" \
             && git pull \
