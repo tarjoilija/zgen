@@ -80,9 +80,10 @@ fi
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
     local url="${1}"
-    url=${url//\//-SLASH-}
-    url=${url//\:/-COLON-}
-    url=${url//\|/-PIPE-}
+    url="${url//\//-SLASH-}"
+    url="${url//\:/-COLON-}"
+    url="${url//\|/-PIPE-}"
+    url="${url//~/-TILDE-}"
     -zgputs "$url"
 }
 
