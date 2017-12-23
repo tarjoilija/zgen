@@ -20,10 +20,10 @@ Place the following code after the one above to load oh-my-zsh for example, see 
 
     # if the init scipt doesn't exist
     if ! zgen saved; then
-    
+
       # specify plugins here
       zgen oh-my-zsh
-      
+
       # generate the init script from plugins above
       zgen save
     fi
@@ -54,25 +54,25 @@ It's a good idea to load the base components before specifying any plugins.
 #### Load Prezto
 
     zgen prezto
-    
+
 This will create a symlink in the `ZSHDOT` or `HOME` directory. This is needed by prezto.
 
 #### Load prezto plugins
 
     zgen prezto <modulename>
-    
+
 This uses the Prezto method for loading modules.
 
 #### Load a repo as Prezto plugins
 
     zgen pmodule <reponame> <branch>
-    
+
 This uses the Prezto method for loading the module. It creates a symlink and calls `pmodule`.
 
 #### Set prezto options
 
     zgen prezto <modulename> <option> <value(s)>
-    
+
 This must be used before the module is loaded. Or if the default modules should be loaded (default) these settings must be done before the `zgen prezto` command. `module` is prepended if the name does not start with `module`, `prezto` or a `*`, `prezto` is prepended if it does not start with `prezto`.
 
 ### General zgen functions
@@ -80,7 +80,7 @@ This must be used before the module is loaded. Or if the default modules should 
 #### Load plugins and completions
 
     zgen load <repo> [location] [branch]
-    
+
 Zgen tries to source any scripts from `location` using a "very smart matching logic". If it fails to find any, it will appends `location` to `$fpath`.
 
 - `repo`
@@ -101,17 +101,17 @@ Zgen tries to source any scripts from `location` using a "very smart matching lo
 #### Bulk load plugins
 
     zgen loadall <plugins>
-    
+
 Please see example `.zshrc` for usage.
 
 #### Generate init script
     zgen save
-    
+
 It is recommended to save the plugin sourcing part to a static init script so we don't have to go through the time consuming installing/updating part every time we start the shell (or source .zshrc)
 
 #### Remove init script
     zgen reset
-    
+
 Removes the init script so it will be created next time you start the shell. You must run this every time you add or remove plugins to trigger the changes.
 
 This will not remove the plugins physically from disk.
@@ -122,7 +122,7 @@ Returns 0 if an init script exists.
 
 #### Update all plugins and reset
     zgen update
-    
+
 Pulls updates on every plugin repository and removes the init script.
 
 #### Update zgen
