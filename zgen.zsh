@@ -218,7 +218,7 @@ zgen-update() {
         -zgpute "Updating '${repo}' ..."
         (cd "${repo}" \
             && git pull \
-            && git submodule update --recursive)
+            && git submodule update --init --recursive)
     done
     zgen-reset
 }
