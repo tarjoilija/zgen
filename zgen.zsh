@@ -265,7 +265,12 @@ zgen-save() {
 
         local ages="$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \
                       stat -Lf "%m" 2>/dev/null $ZGEN_RESET_ON_CHANGE)"
-        local shas="$(shasum -a 256 ${ZGEN_RESET_ON_CHANGE})"
+
+        if ! type "sha256sum" > /dev/null; then
+          local shas="$(shasum -a 256 ${ZGEN_RESET_ON_CHANGE})"
+        else
+          local shas="$(sha256sum ${ZGEN_RESET_ON_CHANGE})"
+        fi
 
         -zginit "read -rd '' ages <<AGES; read -rd '' shas <<SHAS"
         -zginit "$ages"
@@ -276,7 +281,13 @@ zgen-save() {
         -zginit 'if [[ -n "$ZGEN_RESET_ON_CHANGE" \'
         -zginit '   && "$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \'
         -zginit '         stat -Lf "%m"             $ZGEN_RESET_ON_CHANGE)" != "$ages" \'
-        -zginit '   && "$(shasum -a 256             $ZGEN_RESET_ON_CHANGE)" != "$shas" ]]; then'
+
+        if ! type "sha256sum" > /dev/null; then
+          -zginit '   && "$(shasum -a 256           $ZGEN_RESET_ON_CHANGE)" != "$shas" ]]; then'
+        else
+          -zginit '   && "$(sha256sum               $ZGEN_RESET_ON_CHANGE)" != "$shas" ]]; then'
+        fi
+
         -zginit '   printf %s\\n '\''-- zgen: Files in $ZGEN_RESET_ON_CHANGE changed; resetting `init.zsh`...'\'
         -zginit '   zgen reset'
         -zginit 'fi'
