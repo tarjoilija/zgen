@@ -208,6 +208,8 @@ The [awesome-zsh-plugins](https://github.com/unixorn/awesome-zsh-plugins) list c
 
 There's a quickstart kit for using zsh and zgen at [zsh-quickstart-kit](https://github.com/unixorn/zsh-quickstart-kit) that guides you through setting up zgen and includes a sampler of useful plugins.
 
+The [autoupdate-zgen](https://github.com/unixorn/autoupdate-zgen) plugin will enable your zgen to periodically update itself and your list of plugins.
+
 ## Alternatives
 
 - [antigen](https://github.com/zsh-users/antigen) - popular and mature
