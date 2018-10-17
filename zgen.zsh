@@ -439,10 +439,6 @@ zgen-prezto() {
     if [[ $# == 0 ]]; then
         ZGEN_USE_PREZTO=1
         zgen-load "${repo}" "${file}"
-        if [[ ! -h ${ZDOTDIR:-$HOME}/.zprezto ]]; then
-            local dir="$(-zgen-get-clone-dir ${repo} ${ZGEN_PREZTO_BRANCH})"
-            ln -s "${dir}" "${ZDOTDIR:-$HOME}/.zprezto"
-        fi
         if [[ ${ZGEN_PREZTO_LOAD_DEFAULT} != 0 ]]; then
             -zgen-prezto-load "'environment' 'terminal' 'editor' 'history' 'directory' 'spectrum' 'utility' 'completion' 'prompt'"
         fi
@@ -473,13 +469,6 @@ zgen-pmodule() {
     # clone repo if not present
     if [[ ! -d "${dir}" ]]; then
         zgen-clone "${repo}" "${branch}"
-    fi
-
-    local module=$(basename ${repo})
-
-    local preztodir="${ZDOTDIR:-$HOME}/.zprezto/modules/${module}"
-    if [[ ! -h ${preztodir} ]]; then
-        ln -s $dir ${preztodir}
     fi
 
     -zgen-prezto-load "'${module}'"
