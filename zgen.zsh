@@ -80,9 +80,10 @@ fi
     # Remove characters from a url that don't work well in a filename.
     # Inspired by -anti-get-clone-dir() method from antigen.
     local url="${1}"
-    url=${url//\//-SLASH-}
-    url=${url//\:/-COLON-}
-    url=${url//\|/-PIPE-}
+    url="${url//\//-SLASH-}"
+    url="${url//\:/-COLON-}"
+    url="${url//\|/-PIPE-}"
+    url="${url//~/-TILDE-}"
     -zgputs "$url"
 }
 
@@ -91,13 +92,13 @@ fi
     local branch="${2:-master}"
 
     if [[ -e "${repo}/.git" ]]; then
-        -zgputs "${ZGEN_DIR}/local/$(basename ${repo})-${branch}"
+        -zgputs "${ZGEN_DIR}/local/${repo:t}-${branch}"
     else
         # Repo directory will be location/reponame
-        local reponame="$(basename ${repo})"
+        local reponame="${repo:t}"
         # Need to encode incase it is a full url with characters that don't
         # work well in a filename.
-        local location="$(-zgen-encode-url $(dirname ${repo}))"
+        local location="$(-zgen-encode-url ${repo:h})"
         repo="${location}/${reponame}"
         -zgputs "${ZGEN_DIR}/${repo}-${branch}"
     fi
@@ -152,7 +153,7 @@ zgen-clone() {
         ZGEN_LOADED+=("${file}")
         source "${file}"
 
-        completion_path="$(dirname ${file})"
+        completion_path="${file:h}"
 
         -zgen-add-to-fpath "${completion_path}"
     fi
@@ -214,11 +215,12 @@ zgen-reset() {
 }
 
 zgen-update() {
-    for repo in "${ZGEN_DIR}"/*/*; do
+    setopt localoptions extended_glob
+    for repo in "${ZGEN_DIR}"/(^.git)/*; do
         -zgpute "Updating '${repo}' ..."
         (cd "${repo}" \
             && git pull \
-            && git submodule update --recursive)
+            && git submodule update --init --recursive)
     done
     zgen-reset
 }
@@ -281,7 +283,7 @@ zgen-save() {
 
         local ages="$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \
                       stat -Lf "%m" 2>/dev/null $ZGEN_RESET_ON_CHANGE)"
-        local shas="$(shasum -a 256 ${ZGEN_RESET_ON_CHANGE})"
+        local shas="$(cksum ${ZGEN_RESET_ON_CHANGE})"
 
         -zginit "read -rd '' ages <<AGES; read -rd '' shas <<SHAS"
         -zginit "$ages"
@@ -292,7 +294,7 @@ zgen-save() {
         -zginit 'if [[ -n "$ZGEN_RESET_ON_CHANGE" \'
         -zginit '   && "$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \'
         -zginit '         stat -Lf "%m"             $ZGEN_RESET_ON_CHANGE)" != "$ages" \'
-        -zginit '   && "$(shasum -a 256             $ZGEN_RESET_ON_CHANGE)" != "$shas" ]]; then'
+        -zginit '   && "$(cksum                     $ZGEN_RESET_ON_CHANGE)" != "$shas" ]]; then'
         -zginit '   printf %s\\n '\''-- zgen: Files in $ZGEN_RESET_ON_CHANGE changed; resetting `init.zsh`...'\'
         -zginit '   zgen reset'
         -zginit 'fi'
@@ -445,10 +447,6 @@ zgen-prezto() {
     if [[ $# == 0 ]]; then
         ZGEN_USE_PREZTO=1
         zgen-load "${repo}" "${file}"
-        if [[ ! -h ${ZDOTDIR:-$HOME}/.zprezto ]]; then
-            local dir="$(-zgen-get-clone-dir ${repo} ${ZGEN_PREZTO_BRANCH})"
-            ln -s "${dir}" "${ZDOTDIR:-$HOME}/.zprezto"
-        fi
         if [[ ${ZGEN_PREZTO_LOAD_DEFAULT} != 0 ]]; then
             -zgen-prezto-load "'environment' 'terminal' 'editor' 'history' 'directory' 'spectrum' 'utility' 'completion' 'prompt'"
         fi
@@ -481,13 +479,7 @@ zgen-pmodule() {
         zgen-clone "${repo}" "${branch}"
     fi
 
-    local module=$(basename ${repo})
-
-    local preztodir="${ZDOTDIR:-$HOME}/.zprezto/modules/${module}"
-    if [[ ! -h ${preztodir} ]]; then
-        ln -s $dir ${preztodir}
-    fi
-
+    local module="${repo:t}"
     -zgen-prezto-load "'${module}'"
 }
 
