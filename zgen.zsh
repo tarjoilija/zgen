@@ -239,6 +239,23 @@ zgen-save() {
         for option in "${ZGEN_PREZTO_OPTIONS[@]}"; do
             -zginit "${option}"
         done
+
+        # Check if prezto main module is first in ZGEN_LOADED
+        # Load it before loading the rest of the prezto modules
+        if [[ ${ZGEN_LOADED[1]} =~ "prezto-master/init.zsh" ]]; then
+            # Source it and remove from array
+            -zginit 'source "'"${(q)ZGEN_LOADED[1]}"\"
+            ZGEN_LOADED[1]=()
+        fi
+
+        # load prezto modules
+        -zginit ""
+        -zginit "# ### Prezto modules"
+        printf %s "pmodload" >> "${ZGEN_INIT}"
+        for module in "${ZGEN_PREZTO_LOAD[@]}"; do
+            printf %s " ${module}" >> "${ZGEN_INIT}"
+        done
+        -zginit ""
     fi
 
     -zginit ""
@@ -252,7 +269,7 @@ zgen-save() {
     #       available flags are meaningless in the presence of `-C`.
     -zginit ""
     -zginit "# ### Plugins & Completions"
-    -zginit 'fpath=('"${(@q)ZGEN_COMPLETIONS}"' ${fpath})'
+    -zginit 'fpath=('"${(@qOa)ZGEN_COMPLETIONS}"' ${fpath})'
     if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
         -zginit ""
         -zginit 'autoload -Uz compinit && \'
@@ -283,17 +300,6 @@ zgen-save() {
         -zginit 'fi'
     fi
 
-    # load prezto modules
-    if [[ ${ZGEN_USE_PREZTO} == 1 ]]; then
-        -zginit ""
-        -zginit "# ### Prezto modules"
-        printf %s "pmodload" >> "${ZGEN_INIT}"
-        for module in "${ZGEN_PREZTO_LOAD[@]}"; do
-            printf %s " ${module}" >> "${ZGEN_INIT}"
-        done
-    fi
-
-    -zginit ""
     -zginit "# }}}"
 
     zgen-apply
