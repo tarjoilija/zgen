@@ -59,6 +59,8 @@ It's a good idea to load the base components before specifying any plugins.
 
 This will create a symlink in the `ZSHDOT` or `HOME` directory. This is needed by prezto.
 
+**Note**: When `zgen prezto` is used with `zgen oh-my-zsh` together, `zgen prezto` should be **put behind** the other. Or prompt theme from prezto may not display as expected.
+
 #### Load prezto plugins
 
     zgen prezto <modulename>
