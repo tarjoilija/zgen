@@ -29,6 +29,14 @@ Place the following code after the one above to load oh-my-zsh for example, see 
       zgen save
     fi
 
+### Arch Linux
+
+Install the `zgen-git` package from the AUR. Then load zgen by adding the following to your `.zshrc`:
+
+```zsh
+source /usr/share/zsh/share/zgen.zsh
+```
+
 ## Usage
 
 ### oh-my-zsh
