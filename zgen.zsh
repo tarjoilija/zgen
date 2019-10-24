@@ -32,6 +32,10 @@ if [[ -z "${ZGEN_LOADED}" ]]; then
     ZGEN_LOADED=()
 fi
 
+if [[ -z "${ZGEN_LOADED_MAP}" ]]; then
+    typeset -A ZGEN_LOADED_MAP
+fi
+
 if [[ -z "${ZGEN_PREZTO_OPTIONS}" ]]; then
     ZGEN_PREZTO_OPTIONS=()
 fi
@@ -147,15 +151,35 @@ zgen-clone() {
 }
 
 -zgen-source() {
-    local file="${1}"
+    local file_="${1}"
 
-    if [[ ! "${ZGEN_LOADED[@]}" =~ "${file}" ]]; then
-        ZGEN_LOADED+=("${file}")
-        source "${file}"
+    if [[ ! "${ZGEN_LOADED[@]}" =~ "${file_}" ]]; then
+        ZGEN_LOADED+=("${file_}")
+        source "${file_}"
 
-        completion_path="${file:h}"
+        completion_path="${file_:h}"
 
         -zgen-add-to-fpath "${completion_path}"
+
+        # Remember the mapping of the target file onto the
+        # repository name for the later use in zgen-save
+        if [[ -z "${repo}" ]]; then
+            # For local files assume that the plugin name is
+            # the directory containing the file to source.
+            # The slash is to make globs like */plgname match.
+            ZGEN_LOADED_MAP[${file_}]="/${${file_:h}:t}"
+        else
+            if [[ "${dir}" = *robbyrussell* ]]; then
+                # For Oh My Zsh, include the file name in
+                # the mapped plugin name. Note: it's the
+                # outer-scope $file, not $file_
+                ZGEN_LOADED_MAP[${file_}]="${repo}/${file}"
+            else
+                # For other plugins it's the repository
+                # name that is the plugin name
+                ZGEN_LOADED_MAP[${file_}]="$repo"
+            fi
+        fi
     fi
 }
 
@@ -243,9 +267,15 @@ zgen-save() {
 
     -zginit ""
     -zginit "# ### General modules"
+    -zginit "typeset -ga zsh_loaded_plugins"
     for file in "${ZGEN_LOADED[@]}"; do
+        # Output a new line and the plugin name for better readability
+        -zginit $'\n'"# ${${ZGEN_LOADED_MAP[${file}]}#/}"
+        -zginit "zsh_loaded_plugins+=( ${(qqq)ZGEN_LOADED_MAP[${file}]} )"
+        -zginit "ZERO="${(qqq)file}
         -zginit 'source "'"${(q)file}"\"
     done
+    -zginit 'unset ZERO'
 
     # Set up fpath, load completions
     # NOTE: This *intentionally* doesn't use ${ZGEN_COMPINIT_FLAGS}; the only
@@ -324,13 +354,14 @@ zgen-apply() {
 }
 
 zgen-load() {
+    local repo
     if [[ "$#" == 0 ]]; then
         -zgpute '`load` requires at least one parameter:'
         -zgpute '`zgen load <repo> [location] [branch]`'
     elif [[ "$#" == 1 && ("${1[1]}" == '/' || "${1[1]}" == '.' ) ]]; then
         local location="${1}"
     else
-        local repo="${1}"
+        repo="${1}"
         local file="${2}"
         local branch="${3:-master}"
         local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
