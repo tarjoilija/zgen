@@ -53,7 +53,7 @@ if [[ -z "${ZGEN_PREZTO_LOAD_DEFAULT}" ]]; then
 fi
 
 if [[ -z "${ZGEN_OH_MY_ZSH_REPO}" ]]; then
-    ZGEN_OH_MY_ZSH_REPO=robbyrussell
+    ZGEN_OH_MY_ZSH_REPO=ohmyzsh/ohmyzsh
 fi
 
 if [[ "${ZGEN_OH_MY_ZSH_REPO}" != */* ]]; then
