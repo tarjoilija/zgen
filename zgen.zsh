@@ -264,8 +264,8 @@ zgen-save() {
         -zginit ""
         -zginit "# ### Recompilation triggers"
 
-        local ages="$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \
-                      stat -Lf "%m" 2>/dev/null $ZGEN_RESET_ON_CHANGE)"
+        local ages="$(command stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \
+                      command stat -Lf "%m" 2>/dev/null $ZGEN_RESET_ON_CHANGE)"
         local shas="$(cksum ${ZGEN_RESET_ON_CHANGE})"
 
         -zginit "read -rd '' ages <<AGES; read -rd '' shas <<SHAS"
@@ -275,8 +275,8 @@ zgen-save() {
         -zginit "SHAS"
 
         -zginit 'if [[ -n "$ZGEN_RESET_ON_CHANGE" \'
-        -zginit '   && "$(stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \'
-        -zginit '         stat -Lf "%m"             $ZGEN_RESET_ON_CHANGE)" != "$ages" \'
+        -zginit '   && "$(command stat -Lc "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \'
+        -zginit '         command stat -Lf "%m"             $ZGEN_RESET_ON_CHANGE)" != "$ages" \'
         -zginit '   && "$(cksum                     $ZGEN_RESET_ON_CHANGE)" != "$shas" ]]; then'
         -zginit '   printf %s\\n '\''-- zgen: Files in $ZGEN_RESET_ON_CHANGE changed; resetting `init.zsh`...'\'
         -zginit '   zgen reset'
